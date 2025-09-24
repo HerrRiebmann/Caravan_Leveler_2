@@ -53,3 +53,8 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+#Ignore Folder
+/build/
+/Images/
+/3D Case/
