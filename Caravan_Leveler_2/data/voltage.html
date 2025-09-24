@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Caravan - Voltage Monitor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="main.js"></script>
+    <script src="voltage.js"></script>
+    <script src="chart.js"></script>
+</head>
+<body>
+    <div class="card" id="card">
+        <h1>Voltage Monitor &#x26A1;</h1>
+        <div id="noScriptWarning"><h2 style="color:red;">JavaScript is disabled!!!</h2></div>
+        <div id="chart-container">
+            <canvas id="voltageChart"></canvas>
+        </div>
+         <div>
+            <button onclick="setMode('main')" id="main">Main Voltage</button>
+            <button onclick="setMode('secondary')" id="secondary">Secondary Voltage</button>
+            <button onclick="setMode('raw')" id="raw">Raw Input</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Channel</th>
+                    <th>Current</th>
+                    <th>Min</th>
+                    <th>Max</th>
+                </tr>
+            </thead>
+            <tbody id="voltageTable"></tbody>
+        </table>
+    <p>
+        <span id="Output" class="outputSpan"></span>
+    </p>
+    </div>
+</body>
+</html>

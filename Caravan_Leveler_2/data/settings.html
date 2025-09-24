@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Caravan - Leveler</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="main.js"></script>
+    <script src="settings.js"></script>
+</head>
+<body>    
+    <div class="card" id="card">
+        <h1>Settings &#128295;</h1>
+        <div id="noScriptWarning"><h2 style="color:red;">JavaScript is disabled!!!</h2></div>
+        <span id="ThresholdValue" style="display:none"></span>
+        <div id="SetupContainer" class="modal">
+            <div class="modal-content">
+                Indicating Range:<br>
+                <span id="SliderValue" class="brand-color"></span>&#176;<br>
+                <input type="range" min="1" max="45" value="0" class="slider" id="ThresholdSlider">
+                <p>Invert Axis: <input type="number" value="0" min="0" max="3" id="InvertAxis" style="display:none"></p>
+                <img src="mpu6050sml.png" id="mpu6050Image" class="mpu6050-image" onclick="rotateInvertAxis()"
+                    alt="MPU6050">                
+                <p data-tooltip="Enables the Micro-USB Serial Output with debugging information">Serial Output: <input type="checkbox" value="0" id="SerialOutput"></p>
+                <div id="AdvancedSettings">
+                    <h3>Advanced Voltage Settings</h3>
+                    <p data-tooltip="Analog pin number for voltage measurement (0-36)">Voltage Pin: <input type="number" value="0" min="0" max="36" id="VoltagePin"></p>
+                    <p data-tooltip="Voltage threshold to correct differences">Voltage Threshold: <input type="number" value="0" min="0.00" max="50.00" step="0.01" id="VoltageThreshold"></p>
+                    <p data-tooltip="First resistor value in ohms for voltage divider">Resistor 1: <input type="number" value="0" min="0" max="99999" id="Resistor1"></p>
+                    <p data-tooltip="Second resistor value in ohms for voltage divider">Resistor 2: <input type="number" value="0" min="0" max="99999" id="Resistor2"></p>
+                    <h3>WiFi</h3>
+                    <p data-tooltip="Use Accesspoint, otherwise connect to an existing WiFi.">Use Accesspoint: <input type="checkbox" value="0" id="Accesspoint"></p>
+                    <p data-tooltip="Password for the Accesspoint access">Accesspoint PW: <input type="text" id="AccesspointPW"></p>
+                </div>
+                <button onClick="SetSetup()" id="SaveBtn">Save</button><br>
+                <button onClick="Calibrate()" id="Calibrate" data-tooltip="Set the current level to Zero.">Calibrate</button><br>
+                <button onClick="Restart()" id="RestartBtn" data-tooltip="Restart the ESP32 device.">Restart</button>
+            </div>
+        </div>
+        <span id="Output" class="brand-color" style="z-index:10;"></span>
+        <p>
+            <div class="advanced-toggle" data-tooltip="Show advanced voltage calibration settings">
+                <label for="AdvancedMode">Advanced Settings:</label>
+                <input type="checkbox" id="AdvancedMode" onchange="toggleAdvancedSettings()">
+            </div>
+        </p>
+    </div>
+    <div class="dimmer"></div>
+</body>
+</html>

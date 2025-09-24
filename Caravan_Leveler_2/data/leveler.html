@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Caravan - Leveler</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="main.js"></script>
+    <script src="level.js"></script>
+</head>
+<body OnLoad="window.setInterval(GetLevel, 500)">
+    <div class="card" id="card">
+        <h1 id="CustomName">Sport &amp; Fun &#9878;&#65039;</h1>
+        <div id="noScriptWarning"><h2 style="color:red;">JavaScript is disabled!!!</h2></div>
+        <div class="level-container">
+            <div>
+                <div class="level vertical" id="levelVertical">
+                    <div class="value-display value-display-vertical" id="valueY">0°</div>
+                    <div class="bubble" id="bubbleY"></div>
+                </div>
+            </div>
+            <div>
+                <div class="level horizontal" id="levelHorizontal">
+                    <div class="value-display value-display-horizontal" id="valueX">0°</div>
+                    <div class="bubble" id="bubbleX"></div>
+                </div>
+            </div>
+            <span id="Output" class="outputSpan"></span>
+            <span id="Voltage" class="voltageSpan">⚡12.5V</span>
+            <span id="Temperature" class="temperatureSpan">🌡22°C</span>
+        </div>
+    </div>
+</body>
+</html>

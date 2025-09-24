@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <title>Caravan - Leveler</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="main.js"></script>
+    <script src="data.js"></script>
+    <script src="chart.js"></script>
+</head>
+<body>
+    <div class="card" id="card">
+        <h1>Gyro Data &#x1F4C8;</h1>
+        <div id="noScriptWarning"><h2 style="color:red;">JavaScript is disabled!!!</h2></div>
+        <div id="chart-container">
+            <canvas id="sensorChart"></canvas>
+        </div>
+         <div>
+            <button onclick="setMode('gyro')" id="gyro">Gyro</button>
+            <button onclick="setMode('accel')" id="accel">Acceleration</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Axis</th>
+                    <th>Current</th>
+                    <th>Min</th>
+                    <th>Max</th>
+                </tr>
+            </thead>
+            <tbody id="dataTable"></tbody>
+        </table>
+    <p>
+        <span id="Output" class="outputSpan"></span>
+    </p>
+    </div>
+</body>
+</html>
