@@ -18,6 +18,7 @@ This captive portal will force the phone to open up a, usually for login intende
   * [OTA (Over the Air Update)](#OTA-Over-the-Air-Update)
 * [Credentials](#CustomLibrary)
 * [Compatibility](#Compatibility)
+* [Video](#Video)
 
 ### Intention
 The intention was, to attach this to my caravan (_Knaus Sport & Fun_) and provide it with 12V on-board voltage.
@@ -147,3 +148,6 @@ To prevent me from uploading my credentials to this repository, I´ve created a 
 ## Compatibility
 Installed on ESP32 C3 Supermini, ESP-WROOM-32 DevBoard and ESP32-S3-WROOM-1 DevBoard (with 2 USB-C)
 Tested on Firefox, Chrome & Edge for Windows, iOS and Chrome & Firefox for Android.
+
+## Video
+![Main Menu](/Images/CaravanLeveler.gif)
