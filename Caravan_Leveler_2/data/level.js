@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	bubbleY = document.getElementById('bubbleY');
 	valueX = document.getElementById('valueX');
 	valueY = document.getElementById('valueY');
-	SetValue(0, 0, 10, "XX.X", "XX.X");
+	SetValue(0, 0, 10, "00.0", "00.0");
 });
 function simulateRandomMovement() {
 	const maxVal = 10;	
@@ -27,7 +27,9 @@ function SetValue(X, Y, Threshold, Voltage, Temp) {
 	const bgColor = window.AppState.ADXL345_Initialized ? COLORS.SENSOR_GREEN : COLORS.ERROR_BRIGHT_RED;
 	document.getElementById("levelVertical").style.background = bgColor;
 	document.getElementById("levelHorizontal").style.background = bgColor;
-	document.getElementById("Voltage").textContent = "⚡" + parseFloat(Voltage).toFixed(1) + "V";
+	document.getElementById("Voltage").hidden = parseFloat(Voltage) < 1;
+	document.getElementById("Voltage").textContent = "⚡" + parseFloat(Voltage).toFixed(1) + "V";	
+	document.getElementById("Temperature").hidden = parseFloat(Temp) == 0.0;
 	document.getElementById("Temperature").textContent = "🌡" + parseFloat(Temp).toFixed(1) + "°C";
 }
 function SetColor(element, value, Threshold) {
