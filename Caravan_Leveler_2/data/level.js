@@ -5,22 +5,32 @@ document.addEventListener("DOMContentLoaded", function () {
 	bubbleY = document.getElementById('bubbleY');
 	valueX = document.getElementById('valueX');
 	valueY = document.getElementById('valueY');
-	SetValue(0, 0, 10, "00.0", "00.0");
+	// Add intro animation classes until first real value arrives
+	bubbleX.classList.add('bubble-intro-x');
+	bubbleY.classList.add('bubble-intro-y');
+	SetValue(0, 0, 10, "00.0", "00.0", true);
 });
 function simulateRandomMovement() {
 	const maxVal = 10;	
 	SetValue(Math.random() * maxVal * 2 - maxVal, Math.random() * maxVal * 2 - maxVal, maxVal, 12.4, 22.8);
 }
-function SetValue(X, Y, Threshold, Voltage, Temp) {
+let firstRealValueReceived = false;
+let lastX = 0, lastY = 0; // retained for future enhancements
+
+function SetValue(X, Y, Threshold, Voltage, Temp, isInitial = false) {
 	// Limit & normalize (negate for bubble positioning)
 	const tX = Math.max(-Threshold, Math.min(Threshold, X)) * -1;
 	const tY = Math.max(-Threshold, Math.min(Threshold, Y)) * -1;
 
-	bubbleX.style.left = 50 + (tX / Threshold) * 40 + "%";
+	const targetLeft = 50 + (tX / Threshold) * 40;
+	if (!bubbleX.classList.contains('bubble-intro-x'))
+		bubbleX.style.left = targetLeft + "%";
 	SetColor(bubbleX, tX, Threshold);
 	valueX.textContent = Number(X).toFixed(1) + "°";
 
-	bubbleY.style.top = 50 + (tY / Threshold) * 40 + "%";
+	const targetTop = 50 + (tY / Threshold) * 40;
+	if (!bubbleY.classList.contains('bubble-intro-y'))
+		bubbleY.style.top = targetTop + "%";
 	SetColor(bubbleY, tY, Threshold);
 	valueY.textContent = Number(Y).toFixed(1) + "°";
 
@@ -31,6 +41,17 @@ function SetValue(X, Y, Threshold, Voltage, Temp) {
 	document.getElementById("Voltage").textContent = "⚡" + parseFloat(Voltage).toFixed(1) + "V";	
 	document.getElementById("Temperature").hidden = parseFloat(Temp) == 0.0;
 	document.getElementById("Temperature").textContent = "🌡" + parseFloat(Temp).toFixed(1) + "°C";
+
+	// Remove intro animations after first real sensor value
+	if (!isInitial && !firstRealValueReceived && window.AppState.ADXL345_Initialized) {
+		firstRealValueReceived = true;
+		bubbleX.classList.remove('bubble-intro-x');
+		bubbleY.classList.remove('bubble-intro-y');
+		bubbleX.classList.add('settling');
+		bubbleY.classList.add('settling');
+		setTimeout(()=>{ bubbleX.classList.remove('settling'); bubbleY.classList.remove('settling'); }, 600);
+	}
+	lastX = tX; lastY = tY;
 }
 function SetColor(element, value, Threshold) {
 	let mappedVal = mapValues(value, -Threshold, Threshold, -100, 100);

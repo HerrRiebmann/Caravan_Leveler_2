@@ -401,10 +401,37 @@ div.settings input {
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  transition: 0.1s;
+  /* Smooth positional & color transitions */
+  transition: left 0.42s cubic-bezier(0.22,0.61,0.36,1), top 0.42s cubic-bezier(0.22,0.61,0.36,1), background-color 0.3s linear, transform 0.42s cubic-bezier(0.22,0.61,0.36,1);
   z-index: 1;
   overflow: hidden;
 }
+
+/* Startup / idle intro animation (until first sensor value arrives) */
+@keyframes bubbleIntroX {
+  0% { left: 12%; }
+  40% { left: 88%; }
+  60% { left: 88%; }
+  100% { left: 50%; }
+  60% { left: 88%; }
+  40% { left: 88%; }
+  0% { left: 12%; }
+}
+@keyframes bubbleIntroY {
+  0% { top: 15%; }
+  40% { top: 85%; }
+  60% { top: 85%; }
+  100% { top: 50%; }
+  60% { top: 85%; }
+  40% { top: 85%; }
+  0% { top: 15%; }
+}
+.bubble-intro-x { animation: bubbleIntroX 2.2s ease-in-out infinite alternate; }
+.bubble-intro-y { animation: bubbleIntroY 2.2s ease-in-out infinite alternate; }
+
+/* When intro animation is removed, a subtle scale settles it */
+.bubble.settling { animation: bubbleSettle 0.5s ease-out; }
+@keyframes bubbleSettle { from { transform: translate(-50%, -50%) scale(1.1); } to { transform: translate(-50%, -50%) scale(1); } }
 
 .bubble::after {
   content: "";
@@ -662,3 +689,83 @@ table thead th:first-child {
   color: #00ff00;
   border: 1px solid #008CBA;
 }
+
+/* Rotated image leveler */
+.rotation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2.2rem;
+  margin-top: 3rem; /* reduced to move semicircles up */
+  position: relative;
+}
+.rotation-unit { position: relative; }
+.scale-wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: auto;
+}
+.semi-scale { width: 100%; height: 110px; position: absolute; top: 0; left: 0; }
+.rot-image {
+  position: absolute;
+  top: 100px; /* center at arc baseline */
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%, -50%) rotate(0deg);
+  transform-origin: 50% 50%;
+  transition: transform 0.35s cubic-bezier(0.22,0.61,0.36,1);
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+  user-select: none;
+  pointer-events: none;
+}
+.rot-image.settling-img { animation: imgSettle 0.5s ease-out; }
+@keyframes imgSettle { from { transform: translate(-50%, -50%) scale(1.1); } to { transform: translate(-50%, -50%) scale(1); } }
+
+.angle-value {
+  position: absolute;
+  background: rgba(255,255,255,0.85);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  color: #222;
+  font-size: 1.05em;
+  min-width: 56px;
+  pointer-events: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: left 0.35s cubic-bezier(0.22,0.61,0.36,1), top 0.35s cubic-bezier(0.22,0.61,0.36,1), background-color 0.3s ease;
+}
+.axis-label {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  color: #008CBA;
+  font-size: 0.9em;
+}
+
+/* View toggle button */
+.view-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: #008CBA;
+  color: #fff;
+  font-size: 1.3em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: background 0.25s ease, transform 0.2s ease;
+  z-index: 20;
+}
+.view-toggle:hover { background:#0a9ed3; }
+.view-toggle:active { transform: scale(0.9); }

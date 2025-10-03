@@ -117,3 +117,12 @@ function setButtonState(buttonId, success) {
         btn.style.backgroundColor = success ? COLORS.SUCCESS_GREEN : colorError;
     }
 }
+
+// Lightweight toggle between classic bubble leveler and image rotation leveler
+function ToggleLevelMode() {
+    const path = window.location.pathname;
+    if (path.endsWith('leveler_images.html'))
+        window.location.href = 'leveler.html';
+    else
+        window.location.href = 'leveler_images.html';
+}
