@@ -1,4 +1,4 @@
-String getContentType(String filename) { // convert the file extension to the MIME type
+String getContentType(String filename) {  // convert the file extension to the MIME type
   if (filename.endsWith(".html"))
     return "text/html";
   else if (filename.endsWith(".css"))
@@ -19,8 +19,8 @@ void handleFileRead() {
   String path = webServer.uri();
   handleFileReadByName(path);
 }
-void handleFileReadByName(String path) {  
-  if(Serial_Enabled)
+void handleFileReadByName(String path) {
+  if (Serial_Enabled)
     logPrint("Handle FileRead: " + path, true);
 
   // If a folder is requested, send index.html
@@ -28,7 +28,7 @@ void handleFileReadByName(String path) {
     path.concat("index.html");
 
   // If request is captive request, followed with a GUID
-  if(path.startsWith("/generate_204")){    
+  if (path.startsWith("/generate_204")) {
     redirect();
     return;
   }
@@ -43,7 +43,7 @@ void handleFileReadByName(String path) {
     }
     size_t sent = webServer.streamFile(file, getContentType(path));
     file.close();
-    if(Serial_Enabled) {
+    if (Serial_Enabled) {
       logPrint(String("\tSent file: ") + path);
       logPrint(" " + String(sent), true);
     }
@@ -51,7 +51,7 @@ void handleFileReadByName(String path) {
   }
 
   handleNotFound();
-  if(Serial_Enabled)
+  if (Serial_Enabled)
     logPrint(String("\tFile Not Found: ") + path, true);
 }
 
@@ -80,7 +80,7 @@ void handle_fileupload(HTTPUpload& upload) {
       fsUploadFile.close();
       logPrint("handleFileUpload Size: ");
       logPrintLn(String(upload.totalSize));
-      // Redirect the client to the root page      
+      // Redirect the client to the root page
       webServer.setContentLength(CONTENT_LENGTH_UNKNOWN);
       webServer.sendHeader("Connection", "close");
       webServer.sendHeader("Location", "/");

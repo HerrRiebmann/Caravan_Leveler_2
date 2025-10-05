@@ -40,6 +40,7 @@ bool voltage_read = false;
 String logBuffer;
 
 bool UploadIsOTA = false;
+bool UploadIsSPIFFS = false;
 
 //Settings
 Preferences settings;
@@ -58,17 +59,17 @@ void logPrint(const String &msg, bool linebreak = false);
 
 void setup() {
   SerialBegin();
-  
+
   MPU6050Begin();
 
   SpiffsBegin();
 
   LoadData();
-  
+
   WiFiBegin();
+
   setupOTA();
 
-  //MPU6050Begin();
   InitializeVoltageMeasuring();
 }
 
@@ -81,7 +82,4 @@ void loop() {
 
   //OTA
   OTA_Handle();
-
-  //Voltage
-  RefreshCurrentVoltage();
 }

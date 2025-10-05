@@ -4,12 +4,15 @@ let rollImage, pitchImage, rollValue, pitchValue;
 let currentThreshold = 10;
 let rollScaleBuilt = false, pitchScaleBuilt = false;
 let firstRealValueReceivedImages = false;
+let scaleUpdatedWithRealThreshold = false; // ensures we rebuild the scale only once with the real threshold
 
 document.addEventListener("DOMContentLoaded", () => {
     rollImage = document.getElementById('rollImage');
     pitchImage = document.getElementById('pitchImage');
     rollValue = document.getElementById('rollValue');
     pitchValue = document.getElementById('pitchValue');
+    // Persist that user is currently viewing image leveler
+    try { localStorage.setItem('levelerMode','images'); } catch(e) {}
     SetImageValues(0, 0, currentThreshold, "00.0", "00.0", true);
 });
 
@@ -52,8 +55,18 @@ function simulateRandomMovementImages() {
 
 function SetImageValues(x, y, threshold, voltage, temp, isInitial = false) {
     currentThreshold = threshold || currentThreshold;
+    // Initial build with default (likely 10)
     if (!rollScaleBuilt) { buildScale('rollScale', currentThreshold); rollScaleBuilt = true; }
     if (!pitchScaleBuilt) { buildScale('pitchScale', currentThreshold); pitchScaleBuilt = true; }
+    // After first real web request (isInitial = false) rebuild both scales ONCE using the actual threshold
+    if (!isInitial && !scaleUpdatedWithRealThreshold) {
+        if (threshold && threshold > 0) {
+            buildScale('rollScale', threshold);
+            buildScale('pitchScale', threshold);
+            currentThreshold = threshold; // adopt real threshold for subsequent positioning/color mapping
+        }
+        scaleUpdatedWithRealThreshold = true;
+    }
 
     // Apply rotation directly (roll uses Y axis; pitch uses X axis)
     rollImage.style.transform = `translate(-50%, -50%) rotate(${y.toFixed(1)}deg)`;
@@ -71,7 +84,7 @@ function SetImageValues(x, y, threshold, voltage, temp, isInitial = false) {
     pitchValue.style.backgroundColor = valueToColor(x, currentThreshold);
 
     document.getElementById("Voltage").hidden = parseFloat(voltage) < 1;
-    document.getElementById("Voltage").textContent = "⚡" + parseFloat(voltage).toFixed(1) + "V";   
+    document.getElementById("Voltage").textContent = "⚡" + parseFloat(voltage).toFixed(1) + "V";  
     document.getElementById("Temperature").hidden = parseFloat(temp) === 0.0;
     document.getElementById("Temperature").textContent = "🌡" + parseFloat(temp).toFixed(1) + "°C";
 

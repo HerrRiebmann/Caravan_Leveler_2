@@ -1,9 +1,9 @@
-void LoadData(){
+void LoadData() {
   //Readonly: false
   settings.begin("settings", false);
   //Variable Name: Max 15 chars!!!!
-  
-  LoadLevel();  
+
+  LoadLevel();
   LoadLevelThreshold();
   LoadInvertation();
   LoadAP();
@@ -16,7 +16,7 @@ void LoadLevel() {
   calibrationX = settings.getFloat("calibrationX", calibrationX);
   calibrationY = settings.getFloat("calibrationY", calibrationY);
 
-  if(!Serial_Enabled)
+  if (!Serial_Enabled)
     return;
   logPrint("Loaded X: ");
   logPrint(String(calibrationX));
@@ -25,15 +25,15 @@ void LoadLevel() {
 }
 
 void LoadLevelThreshold() {
-  levelThreshold = settings.getInt("levelThreshold", levelThreshold);  
-  if(!Serial_Enabled)
+  levelThreshold = settings.getInt("levelThreshold", levelThreshold);
+  if (!Serial_Enabled)
     return;
   logPrint("Loaded Threshold: ");
   logPrintLn(String(levelThreshold));
 }
 void LoadInvertation() {
   invertAxis = settings.getInt("invertAxis", invertAxis);
-  if(!Serial_Enabled)
+  if (!Serial_Enabled)
     return;
   logPrint(String(F("Loaded Inverted Axis: ")));
   logPrintLn(String(invertAxis));
@@ -41,14 +41,14 @@ void LoadInvertation() {
 
 void LoadAP() {
   useAcessPointMode = settings.getBool("useAPMode", useAcessPointMode);
-  if(!Serial_Enabled)
+  if (!Serial_Enabled)
     return;
   logPrint(String(F("Loaded AccessPoint: ")));
   logPrintLn(String(useAcessPointMode));
 }
 void LoadSerial() {
   Serial_Enabled = settings.getBool("serialEnabled", useAcessPointMode);
-  if(!Serial_Enabled)
+  if (!Serial_Enabled)
     return;
   logPrint(String(F("Serial Output enabled: ")));
   logPrintLn(String(Serial_Enabled));
@@ -58,7 +58,7 @@ void LoadVoltageSettings() {
   voltagePin = settings.getInt("voltagePin", voltagePin);
   resistor1 = settings.getInt("resistor1", resistor1);
   resistor2 = settings.getInt("resistor2", resistor2);
-  if(!Serial_Enabled)
+  if (!Serial_Enabled)
     return;
   logPrint(String(F("Loaded Voltage Threshold: ")));
   logPrintLn(String(voltThreshold));
@@ -77,28 +77,28 @@ void StoreLevel() {
 }
 void StoreLevelThreshold() {
   settings.begin("settings", false);
-  settings.putInt("levelThreshold", levelThreshold);  
+  settings.putInt("levelThreshold", levelThreshold);
   settings.end();
 }
 void StoreInvertation() {
   settings.begin("settings", false);
-  settings.putInt("invertAxis", invertAxis);  
+  settings.putInt("invertAxis", invertAxis);
   settings.end();
 }
 
 void StoreAP() {
   settings.begin("settings", false);
-  settings.putBool("useAPMode", useAcessPointMode);  
+  settings.putBool("useAPMode", useAcessPointMode);
   settings.end();
 }
-void StoreSerial(){
+void StoreSerial() {
   settings.begin("settings", false);
   settings.putBool("serialEnabled", Serial_Enabled);
-  settings.end();  
+  settings.end();
 }
 void StoreVoltageSettings() {
   settings.begin("settings", false);
-  settings.putFloat("voltThreshold", voltThreshold);  
+  settings.putFloat("voltThreshold", voltThreshold);
   settings.putInt("voltagePin", voltagePin);
   settings.putInt("resistor1", resistor1);
   settings.putInt("resistor2", resistor2);

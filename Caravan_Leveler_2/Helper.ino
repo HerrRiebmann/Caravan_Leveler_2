@@ -6,73 +6,73 @@ void SerialBegin() {
 
 void MPU6050Begin() {
   accelInitialized = mpu.begin();
-  if (!accelInitialized){
+  if (!accelInitialized) {
     logPrintLn("Ooops, no MPU6050 detected ... Check your wiring!");
     return;
   }
-  
+
   mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
   mpu.setGyroRange(MPU6050_RANGE_500_DEG);
   mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
-  if(!Serial_Enabled)
+  if (!Serial_Enabled)
     return;
-    
+
   logPrint("Accelerometer range set to: ");
   switch (mpu.getAccelerometerRange()) {
-  case MPU6050_RANGE_2_G:
-    logPrintLn("+-2G");
-    break;
-  case MPU6050_RANGE_4_G:
-    logPrintLn("+-4G");
-    break;
-  case MPU6050_RANGE_8_G:
-    logPrintLn("+-8G");
-    break;
-  case MPU6050_RANGE_16_G:
-    logPrintLn("+-16G");
-    break;
+    case MPU6050_RANGE_2_G:
+      logPrintLn("+-2G");
+      break;
+    case MPU6050_RANGE_4_G:
+      logPrintLn("+-4G");
+      break;
+    case MPU6050_RANGE_8_G:
+      logPrintLn("+-8G");
+      break;
+    case MPU6050_RANGE_16_G:
+      logPrintLn("+-16G");
+      break;
   }
-  
+
   logPrint("Gyro range set to: ");
   switch (mpu.getGyroRange()) {
-  case MPU6050_RANGE_250_DEG:
-    logPrintLn("+- 250 deg/s");
-    break;
-  case MPU6050_RANGE_500_DEG:
-    logPrintLn("+- 500 deg/s");
-    break;
-  case MPU6050_RANGE_1000_DEG:
-    logPrintLn("+- 1000 deg/s");
-    break;
-  case MPU6050_RANGE_2000_DEG:
-    logPrintLn("+- 2000 deg/s");
-    break;
+    case MPU6050_RANGE_250_DEG:
+      logPrintLn("+- 250 deg/s");
+      break;
+    case MPU6050_RANGE_500_DEG:
+      logPrintLn("+- 500 deg/s");
+      break;
+    case MPU6050_RANGE_1000_DEG:
+      logPrintLn("+- 1000 deg/s");
+      break;
+    case MPU6050_RANGE_2000_DEG:
+      logPrintLn("+- 2000 deg/s");
+      break;
   }
 
   logPrint("Filter bandwidth set to: ");
   switch (mpu.getFilterBandwidth()) {
-  case MPU6050_BAND_260_HZ:
-    logPrintLn("260 Hz");
-    break;
-  case MPU6050_BAND_184_HZ:
-    logPrintLn("184 Hz");
-    break;
-  case MPU6050_BAND_94_HZ:
-    logPrintLn("94 Hz");
-    break;
-  case MPU6050_BAND_44_HZ:
-    logPrintLn("44 Hz");
-    break;
-  case MPU6050_BAND_21_HZ:
-    logPrintLn("21 Hz");
-    break;
-  case MPU6050_BAND_10_HZ:
-    logPrintLn("10 Hz");
-    break;
-  case MPU6050_BAND_5_HZ:
-    logPrintLn("5 Hz");
-    break;
-  } 
+    case MPU6050_BAND_260_HZ:
+      logPrintLn("260 Hz");
+      break;
+    case MPU6050_BAND_184_HZ:
+      logPrintLn("184 Hz");
+      break;
+    case MPU6050_BAND_94_HZ:
+      logPrintLn("94 Hz");
+      break;
+    case MPU6050_BAND_44_HZ:
+      logPrintLn("44 Hz");
+      break;
+    case MPU6050_BAND_21_HZ:
+      logPrintLn("21 Hz");
+      break;
+    case MPU6050_BAND_10_HZ:
+      logPrintLn("10 Hz");
+      break;
+    case MPU6050_BAND_5_HZ:
+      logPrintLn("5 Hz");
+      break;
+  }
 }
 
 void SpiffsBegin() {
@@ -98,7 +98,8 @@ bool ProcessETag(const char* ETag) {
     if (webServer.headerName(i).compareTo(F("If-None-Match")) == 0)
       if (webServer.header(i).compareTo(ETag) == 0) {
         webServer.send(304, "text/plain", F("Not Modified"));
-        logPrintLn(String(F("\t")) + webServer.headerName(i) + F(": ") + webServer.header(i));
+        if (Serial_Enabled)
+          logPrintLn(String(F("\t")) + webServer.headerName(i) + F(": ") + webServer.header(i));
         return true;
       }
   }
@@ -113,7 +114,7 @@ void ProcessSetupArguments() {
   bool voltageChanged = false;
 
   for (uint8_t i = 0; i < webServer.args(); i++) {
-    if(Serial_Enabled)
+    if (Serial_Enabled)
       logPrintLn(String(F(" ")) + webServer.argName(i) + F(": ") + webServer.arg(i));
 
     if (webServer.argName(i).compareTo(F("inv")) == 0) {
@@ -133,7 +134,7 @@ void ProcessSetupArguments() {
         StoreLevelThreshold();
       }
     }
-    
+
     if (webServer.argName(i).compareTo(F("s")) == 0) {
       Serial_Enabled = webServer.arg(i) == "1";
       StoreSerial();
@@ -154,14 +155,14 @@ void ProcessSetupArguments() {
       resistor2 = webServer.arg(i).toFloat();
       voltageChanged = true;
     }
-  }  
+  }
 
-  if(voltageChanged)
+  if (voltageChanged)
     StoreVoltageSettings();
 }
 
 String toStringIp(IPAddress ip) {
-  if(Serial_Enabled)
+  if (Serial_Enabled)
     logPrintLn("IptoString");
   String res = "";
   for (int i = 0; i < 3; i++) {
@@ -174,25 +175,25 @@ String toStringIp(IPAddress ip) {
 String GetEncryptionType(byte thisType) {
   // read the encryption type and print out the name:
   switch (thisType) {
-    case 0 :
+    case 0:
       return "OPEN";
-    case 1 :
+    case 1:
       return "WEP";
-    case 2 :
+    case 2:
       return "WPA_PSK";
-    case 3 :
+    case 3:
       return "WPA2_PSK";
-    case 4 :
+    case 4:
       return "WPA_WPA2_PSK";
-    case 5 :
+    case 5:
       return "WPA2_ENTERPRISE";
-    case 6 :
+    case 6:
       return "AUTH_MAX";
   }
   return "Unknown: " + String(thisType);
 }
 String runtime(uint32_t currentMillis) {
-  uint32_t sec {(currentMillis / 1000)};
+  uint32_t sec{ (currentMillis / 1000) };
   char buf[20];
   if (sec / 86400 > 1)
     snprintf(buf, sizeof(buf), "%d Tag%s %02d:%02d:%02d", sec / 86400, sec < 86400 || sec >= 172800 ? "e" : "", sec / 3600 % 24, sec / 60 % 60, sec % 60);
@@ -201,27 +202,28 @@ String runtime(uint32_t currentMillis) {
   return buf;
 }
 const String formatBytes(size_t const& bytes) {
-  return " (" + (bytes < 1024 ? static_cast<String>(bytes) + " Byte" : bytes < 1048576 ? static_cast<String>(bytes / 1024.0) + " KB" : static_cast<String>(bytes / 1048576.0) + " MB") + ")";
+  return " (" + (bytes < 1024 ? static_cast<String>(bytes) + " Byte" : bytes < 1048576 ? static_cast<String>(bytes / 1024.0) + " KB"
+                                                                                       : static_cast<String>(bytes / 1048576.0) + " MB")
+         + ")";
 }
 
-void ResetWebTimer(){
+void ResetWebTimer() {
   lastMillisClientAvailable = millis();
   voltage_read = false;
 }
-void logPrintLn(const String &msg){
+void logPrintLn(const String& msg) {
   logPrint(msg, true);
 }
 
-void logPrint(const String &msg, bool linebreak) {
+void logPrint(const String& msg, bool linebreak) {
   logBuffer.concat(msg);
-  if(linebreak){
+  if (linebreak) {
     Serial.println(msg);
     logBuffer.concat("\n");
+  } else {
+    Serial.print(msg);
   }
-  else {
-    Serial.print(msg);    
-  }
-  if (logBuffer.length() > 10000) { 
+  if (logBuffer.length() > 10000) {
     logBuffer.remove(0, 1000);
   }
 }

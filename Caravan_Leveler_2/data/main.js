@@ -29,15 +29,59 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 function ToggleBurger() {
     const burger = document.getElementById("hamburger-6");
-    burger.classList.toggle('is-active');
-    const x = document.getElementById("myLinks");
-    if (x.style.display === "block")
-        x.style.display = "none";
-    else
-        x.style.display = "block";
+    const container = document.getElementById("BurgerMenu");
+    const links = document.getElementById("myLinks");
+    if (!burger || !container || !links) return;
+    const opening = !burger.classList.contains('is-active');
+    // If closing, add closing class for animation
+    if (!opening) {
+        container.classList.add('menu-closing');
+        container.classList.remove('menu-open');
+        burger.classList.remove('is-active');
+        setTimeout(()=>{ container.classList.remove('menu-closing'); }, 220);
+        removeGlobalMenuHandlers();
+    } else {
+        burger.classList.add('is-active');
+        container.classList.add('menu-open');
+        addGlobalMenuHandlers();
+    }
+}
+
+function closeMenuIfOpen() {
+    const burger = document.getElementById("hamburger-6");
+    const container = document.getElementById("BurgerMenu");
+    if (!burger || !container) return;
+    if (burger.classList.contains('is-active')) {
+        ToggleBurger();
+    }
+}
+
+function handleDocumentClick(e){
+    const container = document.getElementById("BurgerMenu");
+    if (!container) return;
+    if (!container.contains(e.target)) {
+        closeMenuIfOpen();
+    }
+}
+
+function handleKeyDown(e){
+    if (e.key === 'Escape') closeMenuIfOpen();
+}
+
+function addGlobalMenuHandlers(){
+    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('keydown', handleKeyDown);
+}
+function removeGlobalMenuHandlers(){
+    document.removeEventListener('click', handleDocumentClick);
+    document.removeEventListener('keydown', handleKeyDown);
 }
 function NavigateMenu(url) {
     ToggleBurger();
+    // When user asks for the level page, always route through auto-level selection page
+    if (url === 'leveler.html' || url === 'leveler_images.html' || url === 'auto_level.html') {
+        url = 'auto_level.html';
+    }
     document.getElementById("subframe").src = url;
 }
 function GetInfo() {
@@ -72,19 +116,58 @@ function GetInfo() {
     };
     oRequest.send(null);
 }
+// ===================== Output Message Queue =====================
+window.OutputMessageQueue = [];
+let outputDisplaying = false;
+
+function processNextOutput() {
+    const output = document.getElementById("Output");
+    if (!output) { window.OutputMessageQueue.length = 0; outputDisplaying = false; return; }
+    if (window.OutputMessageQueue.length === 0) { outputDisplaying = false; return; }
+
+    const { text, error } = window.OutputMessageQueue.shift();
+    output.classList.remove('output-fade-out','output-cleared');
+    output.classList.add('output-enhanced');
+    output.innerHTML = text;
+    if (error) output.classList.add('output-error'); else output.classList.remove('output-error');
+    output.style.display = 'inline-block';
+    requestAnimationFrame(()=>{ output.classList.add('output-visible'); });
+    outputDisplaying = true;
+    ResetControlsDelayed();
+}
+
 function SetOutput(text, error) {
     const output = document.getElementById("Output");
-    output.innerHTML = text;
-    output.style.color = error ? colorError : document.body.style.color;
-    ResetControlsDelayed();
+    if (!output) return;
+    window.OutputMessageQueue.push({ text: text || "", error: !!error });
+    if (!outputDisplaying) processNextOutput();
 }
 function ResetControlsDelayed() {
     setTimeout(ResetControls, 3000);
 }
 function ResetControls() {
     const output = document.getElementById("Output");
-    output.innerHTML = "";
-    output.style.color = document.body.style.color;
+    if (output) {
+        if (output.innerHTML !== "") {
+            output.classList.remove('output-visible');
+            output.classList.add('output-fade-out');
+            setTimeout(()=>{
+                output.innerHTML = "";
+                output.classList.remove('output-fade-out','output-error','output-enhanced');
+                output.classList.add('output-cleared');
+                output.style.display = 'none';
+                if (window.OutputMessageQueue.length > 0) processNextOutput();
+                else outputDisplaying = false;
+            }, 380);
+        } else if (window.OutputMessageQueue.length > 0) {
+            processNextOutput();
+        } else {
+            output.classList.remove('output-visible','output-error','output-enhanced');
+            output.classList.add('output-cleared');
+            output.style.display = 'none';
+            outputDisplaying = false;
+        }
+    }
 
     const buttons = ["SaveBtn", "NewFilesBtn", "RestartBtn", "Calibrate"];
     buttons.forEach(btnId => {
@@ -121,8 +204,19 @@ function setButtonState(buttonId, success) {
 // Lightweight toggle between classic bubble leveler and image rotation leveler
 function ToggleLevelMode() {
     const path = window.location.pathname;
-    if (path.endsWith('leveler_images.html'))
-        window.location.href = 'leveler.html';
-    else
-        window.location.href = 'leveler_images.html';
+    try {
+        if (path.endsWith('leveler_images.html')) {
+            localStorage.setItem('levelerMode','bubble');
+            window.location.href = 'leveler.html';
+        } else {
+            localStorage.setItem('levelerMode','images');
+            window.location.href = 'leveler_images.html';
+        }
+    } catch(e) {
+        // Fallback without persistence
+        if (path.endsWith('leveler_images.html'))
+            window.location.href = 'leveler.html';
+        else
+            window.location.href = 'leveler_images.html';
+    }
 }

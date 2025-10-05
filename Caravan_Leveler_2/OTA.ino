@@ -1,14 +1,14 @@
-void setupOTA(){  
+void setupOTA() {
   ArduinoOTA.setHostname(deviceName);
-  ArduinoOTA.setPassword(devicePassword);  
-  //Default Port  
+  ArduinoOTA.setPassword(devicePassword);
+  //Default Port
   //ArduinoOTA.setPort(1337);
-  
+
   ArduinoOTA.onStart([]() {
     String type;
     if (ArduinoOTA.getCommand() == U_FLASH)
       type = "sketch";
-    else // U_SPIFFS
+    else  // U_SPIFFS
       type = "filesystem";
 
     // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
@@ -33,7 +33,7 @@ void setupOTA(){
 void handle_update(HTTPUpload& upload) {
   if (upload.status == UPLOAD_FILE_START) {
     Serial.println("Update: " + String(upload.filename.c_str()));
-    if (!Update.begin(UPDATE_SIZE_UNKNOWN)) { //start with max available size
+    if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {  //start with max available size
       Update.printError(Serial);
     }
   } else if (upload.status == UPLOAD_FILE_WRITE) {
@@ -42,7 +42,7 @@ void handle_update(HTTPUpload& upload) {
       Update.printError(Serial);
     }
   } else if (upload.status == UPLOAD_FILE_END) {
-    if (Update.end(true)) { //true to set the size to the current progress
+    if (Update.end(true)) {  //true to set the size to the current progress
       //Kernel panic using upload.totalSize
       //PrintMessageLn("Update Success: " + upload.totalSize);
     } else {
@@ -70,4 +70,31 @@ void handle_update_finish() {
 void OTA_Handle() {
   if (OTA_Enabled)
     ArduinoOTA.handle();
+}
+
+void handle_update_Spiffs(HTTPUpload& upload) {  
+  // if (upload.status == UPLOAD_FILE_START) {
+  //   Update.begin(UPDATE_SIZE_UNKNOWN, U_SPIFFS);
+  // } else if (upload.status == UPLOAD_FILE_WRITE) {
+  //   Update.write(upload.buf, upload.currentSize);
+  // }
+
+  if (upload.status == UPLOAD_FILE_START) {
+    Serial.println("SPIFFSUpdate: " + String(upload.filename.c_str()));
+    if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_SPIFFS)) {  //start with max available size
+      Update.printError(Serial);
+    }
+  } else if (upload.status == UPLOAD_FILE_WRITE) {
+    /* flashing firmware to ESP*/
+    if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
+      Update.printError(Serial);
+    }
+  } else if (upload.status == UPLOAD_FILE_END) {
+    if (Update.end(true)) {  //true to set the size to the current progress
+      //Kernel panic using upload.totalSize
+      //PrintMessageLn("Update Success: " + upload.totalSize);
+    } else {
+      Update.printError(Serial);
+    }
+  }
 }

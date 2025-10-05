@@ -54,6 +54,7 @@ function GetRawData() {
     oRequest.onerror = function (e) {
         SetOutput("Get raw data Error!", true);
         window.AppState.PCVersion = true;
+        SetOutput("PC Demo mode!", false);
     };
     oRequest.send(null);
 }

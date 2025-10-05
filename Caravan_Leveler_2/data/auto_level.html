@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auto Level Loader</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" />
+  <script>
+    (function(){
+        function go() {
+            var target = 'leveler.html';
+            try {
+                var pref = localStorage.getItem('levelerMode');
+                if (pref === 'images') target = 'leveler_images.html';
+            } catch(e) { /* ignore */ }
+            window.location.replace(target);
+        }
+        document.addEventListener('DOMContentLoaded', go);
+    })();
+  </script>
+  <style>
+    body { font-family: Helvetica; color:#008CBA; display:flex; align-items:center; justify-content:center; height:100vh; background:#2f2f2f; }
+    .loading-msg { text-align:center; }
+    .loading-msg span { display:block; margin-top:10px; font-size:0.85em; color:#ccc; }
+  </style>
+</head>
+<body>
+  <div class="loading-msg">
+     <h2>Loading preferred level view...</h2>
+     <span>If this takes too long <a href="leveler.html">open bubble</a> | <a href="leveler_images.html">open images</a></span>
+  </div>
+</body>
+</html>

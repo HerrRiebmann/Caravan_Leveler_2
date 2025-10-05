@@ -4,9 +4,9 @@ void WiFiBegin() {
     CreateAccessPoint();
   else
     ConnectToAccessPoint();
-  
+
   webServer.on("/level", handle_level);
-  webServer.on("/setup", handle_setup); 
+  webServer.on("/setup", handle_setup);
   webServer.on("/calibrate", handle_calibrate);
   webServer.on("/espinfo", handle_esp);
   webServer.on("/data", handle_data);
@@ -16,17 +16,17 @@ void WiFiBegin() {
   webServer.on("/log", handle_log);
   webServer.on("/upload", HTTP_POST, handle_upload_finish, handle_upload);
 
-  //Allways redirect to captive portal. Request comes with IP (8.8.8.8) or URL (connectivitycheck.XXX / captive.apple / etc.)  
-  webServer.on("/generate_204", redirect);    //Android captive portal.
-  webServer.on("/fwlink", redirect);   //Microsoft captive portal.
-  
-  webServer.on("/connecttest.txt", redirect); //www.msftconnecttest.com
-  webServer.on("/hotspot-detect.html", redirect); //captive.apple.com
-  
-  webServer.on("/success.txt", handle_success); //detectportal.firefox.com/sucess.txt
+  //Allways redirect to captive portal. Request comes with IP (8.8.8.8) or URL (connectivitycheck.XXX / captive.apple / etc.)
+  webServer.on("/generate_204", redirect);  //Android captive portal.
+  webServer.on("/fwlink", redirect);        //Microsoft captive portal.
+
+  webServer.on("/connecttest.txt", redirect);      //www.msftconnecttest.com
+  webServer.on("/hotspot-detect.html", redirect);  //captive.apple.com
+
+  webServer.on("/success.txt", handle_success);  //detectportal.firefox.com/sucess.txt
   webServer.onNotFound(handleFileRead);
 
-  const char* Headers[] = {"If-None-Match"};
+  const char* Headers[] = { "If-None-Match" };
   webServer.collectHeaders(Headers, sizeof(Headers) / sizeof(Headers[0]));
 
   webServer.begin();
@@ -36,7 +36,7 @@ void WiFiBegin() {
 
 void ConnectToAccessPoint() {
   logPrint("Connect to: ");
-  logPrint(ssid, true);  
+  logPrint(ssid, true);
   WiFi.begin(ssid, password);
 
   long start = millis();
@@ -62,7 +62,7 @@ void CreateAccessPoint() {
   IPAddress subnet(255, 255, 255, 0);
 
   WiFi.mode(WIFI_AP);
-  if(strlen(devicePassword) > 1)
+  if (strlen(devicePassword) > 1)
     WiFi.softAP(deviceName, devicePassword);
   else
     WiFi.softAP(deviceName);
@@ -70,8 +70,8 @@ void CreateAccessPoint() {
   WiFi.softAPConfig(local_ip, gateway, subnet);
   delay(500);
   logPrint(String(F("AP IP address: ")));
-  logPrintLn(String(WiFi.softAPIP()));
-  if(strlen(devicePassword) > 1){
+  logPrintLn(String(WiFi.softAPIP().toString()));
+  if (strlen(devicePassword) > 1) {
     logPrint("AP Password: ");
     logPrintLn(devicePassword);
   }
@@ -85,28 +85,28 @@ void handle_level() {
   // /level
   if (!accelInitialized) {
     webServer.send(400, "text/plain", "Gyro not initialized!");
-    return;    
+    return;
   }
   getLevel();
-  
+
   float pitchCorrected, rollCorrected;
-  switch(invertAxis){
+  switch (invertAxis) {
     case 0:
-      pitchCorrected = pitch *-1;
-      rollCorrected = roll *-1;
-     break;
+      pitchCorrected = pitch * -1;
+      rollCorrected = roll * -1;
+      break;
     case 1:
       pitchCorrected = roll;
-      rollCorrected = pitch  *-1;
-     break;
+      rollCorrected = pitch * -1;
+      break;
     case 2:
       pitchCorrected = pitch;
       rollCorrected = roll;
-     break;
+      break;
     case 3:
-      pitchCorrected = roll*-1;
+      pitchCorrected = roll * -1;
       rollCorrected = pitch;
-     break;
+      break;
   }
 
   String txt = String(pitchCorrected);
@@ -127,7 +127,7 @@ void handle_level() {
 
 void handle_setup() {
   // /setup
-  if(Serial_Enabled)
+  if (Serial_Enabled)
     Serial.println(F("Handle Setup"));
 
   //With arguments:
@@ -152,11 +152,11 @@ void handle_setup() {
   txt.concat("|");
   txt.concat(String(resistor2));
   txt.concat("|");
-  txt.concat(String(devicePassword));  
+  txt.concat(String(devicePassword));
   webServer.send(200, "text/plain", txt);
 }
 void handle_calibrate() {
-  if(Serial_Enabled)
+  if (Serial_Enabled)
     Serial.println(F("Handle Calibration"));
   CalibrateLevel();
   String result = "Calibration OK (";
@@ -167,15 +167,15 @@ void handle_calibrate() {
   webServer.send(200, "text/plaint", result);
   ResetWebTimer();
 }
-void handle_data(){
-  if(!accelInitialized){
+void handle_data() {
+  if (!accelInitialized) {
     webServer.send(400, "text/plain", "Gyro not initialized!");
     return;
   }
   //Serial.println(F("Handle Raw data"));
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
-  
+
   String result = String(g.gyro.x);
   result.concat("|");
   result.concat(String(g.gyro.y));
@@ -186,13 +186,13 @@ void handle_data(){
   result.concat("|");
   result.concat(String(a.acceleration.y));
   result.concat("|");
-  result.concat(String(a.acceleration.z));  
+  result.concat(String(a.acceleration.z));
   webServer.send(200, "text/plaint", result);
-  if(Serial_Enabled)
+  if (Serial_Enabled)
     Serial.println(result);
   ResetWebTimer();
 }
-void handle_reset(){
+void handle_reset() {
   LoadData();
   webServer.send(200, "text/plaint", "OK");
 }
@@ -202,8 +202,8 @@ void handle_restart() {
   ESP.restart();
 }
 
-void handle_voltage(){
-  word adc_value = analogRead(voltagePin);  
+void handle_voltage() {
+  word adc_value = analogRead(voltagePin);
   float voltage_adc = ((float)adc_value * REF_VOLTAGE) / ADC_RESOLUTION;
   float voltage_in = voltage_adc * (resistor1 + resistor2) / resistor2;
   //Voltage + Threshold | raw value | Voltage input | Voltage without Threshold
@@ -217,13 +217,13 @@ void handle_voltage(){
   webServer.send(200, "text/plaint", result);
 }
 
-void handle_log() {  
+void handle_log() {
   webServer.send(200, "text/plain", logBuffer);
   logBuffer = "";
 }
 
 void handle_wifi() {
-  int n = WiFi.scanNetworks(false, false); //WiFi.scanNetworks(async, show_hidden)
+  int n = WiFi.scanNetworks(false, false);  //WiFi.scanNetworks(async, show_hidden)
   String temp;
   for (int i = 0; i < n; i++) {
     temp += WiFi.SSID(i) + ";";
@@ -244,52 +244,31 @@ void handle_upload() {
   HTTPUpload& upload = webServer.upload();
   if (upload.status == UPLOAD_FILE_START) {
     String filename = upload.filename;
-    UploadIsOTA = filename.endsWith(".bin");
+    if (filename.endsWith(".bin")) {
+      if (filename.indexOf("spiffs") >= 0)
+        UploadIsSPIFFS = true;
+      else
+        UploadIsOTA = true;
+    }
   }
   if (UploadIsOTA)
     handle_update(upload);
-  else
+  if (UploadIsSPIFFS)
+    handle_update_Spiffs(upload);
+  if (!UploadIsOTA && !UploadIsSPIFFS)
     handle_fileupload(upload);
 }
 
 #include <rom/rtc.h>
-const char* const PROGMEM flashChipMode[] = {"QIO", "QOUT", "DIO", "DOUT", "Unbekannt"};
-const char* const PROGMEM resetReason[] = {"ERR", "Power on", "Unknown", "Software", "Watch dog", "Deep Sleep", "SLC module", "Timer Group 0", "Timer Group 1",
-                                           "RTC Watch dog", "Instrusion", "Time Group CPU", "Software CPU", "RTC Watch dog CPU", "Extern CPU", "Voltage not stable", "RTC Watch dog RTC"
-                                          };
+const char* const PROGMEM flashChipMode[] = { "QIO", "QOUT", "DIO", "DOUT", "Unbekannt" };
+const char* const PROGMEM resetReason[] = { "ERR", "Power on", "Unknown", "Software", "Watch dog", "Deep Sleep", "SLC module", "Timer Group 0", "Timer Group 1",
+                                            "RTC Watch dog", "Instrusion", "Time Group CPU", "Software CPU", "RTC Watch dog CPU", "Extern CPU", "Voltage not stable", "RTC Watch dog RTC" };
 void handle_esp() {
-  String temp = "CPU Temp;" + String(temperatureRead()) +
-                "|Runtime;" + runtime(millis()) +
-                "|Build;" +  (String)__DATE__ + " " + (String)__TIME__ +
-                "|SketchSize;" + formatBytes(ESP.getSketchSize()) +
-                "|SketchSpace;" + formatBytes(ESP.getFreeSketchSpace()) +
-                "|LocalIP;" +  WiFi.localIP().toString() +
-                "|Hostname;" + WiFi.getHostname() +
-                "|SSID;" + WiFi.SSID() +
-                "|RSSI;" + WiFi.RSSI() +
-                "|GatewayIP;" +  WiFi.gatewayIP().toString() +
-                "|Channel;" +  WiFi.channel() +
-                "|MacAddress;" +  WiFi.macAddress() +
-                "|SubnetMask;" +  WiFi.subnetMask().toString() +
-                "|BSSID;" +  WiFi.BSSIDstr() +
-                "|ClientIP;" + webServer.client().remoteIP().toString() +
-                "|DnsIP;" + WiFi.dnsIP().toString() +
-                "|ChipModel;" + ESP.getChipModel() +
-                "|Reset1;" + resetReason[rtc_get_reset_reason(0)] +
-                "|Reset2;" + resetReason[rtc_get_reset_reason(1)] +
-                "|CpuFreqMHz;" + ESP.getCpuFreqMHz() +
-                "|HeapSize;" + formatBytes(ESP.getHeapSize()) +
-                "|FreeHeap;" + formatBytes(ESP.getFreeHeap()) +
-                "|MinFreeHeap;" + formatBytes(ESP.getMinFreeHeap()) +
-                "|ChipSize;" +  formatBytes(ESP.getFlashChipSize()) +
-                "|ChipSpeed;" + ESP.getFlashChipSpeed() / 1000000 +
-                "|ChipMode;" + flashChipMode[ESP.getFlashChipMode()] +
-                "|IdeVersion;" + ARDUINO +
-                "|SdkVersion;" + ESP.getSdkVersion();
+  String temp = "CPU Temp;" + String(temperatureRead()) + "|Runtime;" + runtime(millis()) + "|Build;" + (String)__DATE__ + " " + (String)__TIME__ + "|SketchSize;" + formatBytes(ESP.getSketchSize()) + "|SketchSpace;" + formatBytes(ESP.getFreeSketchSpace()) + "|LocalIP;" + WiFi.localIP().toString() + "|Hostname;" + WiFi.getHostname() + "|SSID;" + WiFi.SSID() + "|RSSI;" + WiFi.RSSI() + "|GatewayIP;" + WiFi.gatewayIP().toString() + "|Channel;" + WiFi.channel() + "|MacAddress;" + WiFi.macAddress() + "|SubnetMask;" + WiFi.subnetMask().toString() + "|BSSID;" + WiFi.BSSIDstr() + "|ClientIP;" + webServer.client().remoteIP().toString() + "|DnsIP;" + WiFi.dnsIP().toString() + "|ChipModel;" + ESP.getChipModel() + "|Reset1;" + resetReason[rtc_get_reset_reason(0)] + "|Reset2;" + resetReason[rtc_get_reset_reason(1)] + "|CpuFreqMHz;" + ESP.getCpuFreqMHz() + "|HeapSize;" + formatBytes(ESP.getHeapSize()) + "|FreeHeap;" + formatBytes(ESP.getFreeHeap()) + "|MinFreeHeap;" + formatBytes(ESP.getMinFreeHeap()) + "|ChipSize;" + formatBytes(ESP.getFlashChipSize()) + "|ChipSpeed;" + ESP.getFlashChipSpeed() / 1000000 + "|ChipMode;" + flashChipMode[ESP.getFlashChipMode()] + "|IdeVersion;" + ARDUINO + "|SdkVersion;" + ESP.getSdkVersion();
   webServer.send(200, "text/plain", temp);
 }
 void handleNotFound() {
-  if(Serial_Enabled){
+  if (Serial_Enabled) {
     Serial.println(F("HandleNotFound"));
     PrintIncomingRequest();
   }
@@ -314,8 +293,8 @@ void handleNotFound() {
   webServer.send(404, "text/plain", message);
 }
 
-void handle_success(){
-  if(Serial_Enabled)
+void handle_success() {
+  if (Serial_Enabled)
     Serial.println(F("Handle success.txt"));
   webServer.send(200, "text/plain", "success");
 }
@@ -331,20 +310,20 @@ boolean captivePortal() {
   return false;
 }
 
-void redirect(){
+void redirect() {
   webServer.sendHeader("Location", String("http://") + toStringIp(webServer.client().localIP()), true);
-  webServer.send(302, "text/plain", "");   // Empty content inhibits Content-length header so we have to close the socket ourselves.
-  webServer.client().stop(); // Stop is needed because we sent no content length
+  webServer.send(302, "text/plain", "");  // Empty content inhibits Content-length header so we have to close the socket ourselves.
+  webServer.client().stop();              // Stop is needed because we sent no content length
 }
 
-void PrintIncomingRequest(){  
+void PrintIncomingRequest() {
   Serial.println(webServer.hostHeader());
   Serial.print("  ");
   Serial.println(webServer.uri());
-  
+
   for (uint8_t i = 0; i < webServer.args(); i++)
     Serial.println(String(F(" ")) + webServer.argName(i) + F(": ") + webServer.arg(i) + F("\n"));
-  
+
   for (int i = 0; i < webServer.headers(); i++)
-    Serial.println(String(F("\t")) + webServer.headerName(i) + F(": ") + webServer.header(i));  
+    Serial.println(String(F("\t")) + webServer.headerName(i) + F(": ") + webServer.header(i));
 }

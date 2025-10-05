@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	bubbleY = document.getElementById('bubbleY');
 	valueX = document.getElementById('valueX');
 	valueY = document.getElementById('valueY');
+	// Persist that user is currently viewing bubble leveler
+	try { localStorage.setItem('levelerMode','bubble'); } catch(e) {}
 	// Add intro animation classes until first real value arrives
 	bubbleX.classList.add('bubble-intro-x');
 	bubbleY.classList.add('bubble-intro-y');
@@ -38,7 +40,7 @@ function SetValue(X, Y, Threshold, Voltage, Temp, isInitial = false) {
 	document.getElementById("levelVertical").style.background = bgColor;
 	document.getElementById("levelHorizontal").style.background = bgColor;
 	document.getElementById("Voltage").hidden = parseFloat(Voltage) < 1;
-	document.getElementById("Voltage").textContent = "⚡" + parseFloat(Voltage).toFixed(1) + "V";	
+	document.getElementById("Voltage").textContent = "⚡" + parseFloat(Voltage).toFixed(1) + "V"; 
 	document.getElementById("Temperature").hidden = parseFloat(Temp) == 0.0;
 	document.getElementById("Temperature").textContent = "🌡" + parseFloat(Temp).toFixed(1) + "°C";
 

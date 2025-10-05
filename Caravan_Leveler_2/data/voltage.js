@@ -78,6 +78,7 @@ function GetVoltageData() {
     oRequest.onerror = function (e) {
         SetOutput("Get voltage data Error!", true);
         window.AppState.PCVersion = true;
+        SetOutput("PC Demo mode!", false);
     };
     oRequest.send(null);
 }

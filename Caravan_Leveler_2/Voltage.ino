@@ -17,28 +17,19 @@
 /*                                                                         */
 /*                                                                         */
 
-#define REF_VOLTAGE    3.3
+#define REF_VOLTAGE 3.3
 #define ADC_RESOLUTION 4096.0
 
-void InitializeVoltageMeasuring(){
+void InitializeVoltageMeasuring() {
   pinMode(voltagePin, INPUT);
-    // set the ADC attenuation to 11 dB (up to ~2.6V input)  
+  // set the ADC attenuation to 11 dB (up to ~2.6V input)
   analogSetPinAttenuation(voltagePin, ADC_11db);
-  
-  RefreshCurrentVoltage();
+
+  GetCurrentVoltage();
 }
 
-void RefreshCurrentVoltage(){
-  if(voltage_read)
-    return;
-  if(millis() - lastMillisClientAvailable > 350){
-    voltage = GetCurrentVoltage();
-    voltage_read = true;
-  }
-}
-
-float GetCurrentVoltage(){
-  // read the analog input  
+float GetCurrentVoltage() {
+  // read the analog input
   word adc_value = analogRead(voltagePin);
 
   // determine voltage at adc input
@@ -48,7 +39,7 @@ float GetCurrentVoltage(){
   float voltage_in = voltage_adc * (resistor1 + resistor2) / resistor2;
 
   // print results to serial monitor to 2 decimal places
-  if(Serial_Enabled){    
+  if (Serial_Enabled) {
     Serial.print("Voltage:");
     Serial.print(voltage_in, 2);
     Serial.print(",Raw_Input:");
