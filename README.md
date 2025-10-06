@@ -11,12 +11,12 @@ This captive portal will force the phone to open up a, usually for login intende
 ## Contents
 * [Usage](#usage)
 * [Things](#Things)
+* [Installation](#Installation)
 * [HardwareComponents](#HardwareComponents)
   * [Wiring](#Wiring)
   * [SPIFFS Upload](#SPIFFS-Upload)
   * [Libraries](#Libraries)
   * [OTA (Over the Air Update)](#OTA-Over-the-Air-Update)
-* [Credentials](#CustomLibrary)
 * [Compatibility](#Compatibility)
 * [Demo](#Demo)
 * [Video](#Video)
@@ -87,7 +87,7 @@ The Serial is also only implemented for testing purpose.
 
 ## Things
 ### Installation
-You can download the files here, add the additional libraries and flash them via the Arduino IDE.
+You can download the files here, add the additional libraries and flash them via the Arduino IDE. All Libraries & Tools mentioned below.
 Or you can use the ESP32 Web firmware flash method, which will install all the required components directly onto the ESP.
 
 Currently supported Versions are ESP32, ESP32-S3 & ESP32-C3.
