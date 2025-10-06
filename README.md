@@ -101,14 +101,16 @@ Currently supported Versions are ESP32, ESP32-S3 & ESP32-C3.
 * 5.2k & 1k Ohm Resistor
 
 ### Wiring
-Wiring for the ESP32 C3 Supermini! Check the I2C pinout for your board!
+Wiring for my tested ESP32 types. Check the I2C pinout for your board!
 
-ESP 32 | MPU6050
-------- | --------
-G09 | SCL
-G08 | SDA
-3.3V | VCC
-GND | GND
+ MPU6050 | ESP 32 | ESP32-S3 | ESP32-C3
+ -------- |-------|-------|-------
+ SCL | G22 | G09 | G07
+ SDA | G21 | G08 | G08
+ VCC | 3.3V | 3.3V | 3.3V
+ GND | GND | GND | GND
+
+ 
 
 ESP 32 | LM2596
 ------- | --------
@@ -116,9 +118,15 @@ VIN 5V | OUT+
 GND | OUT-
 
 **Voltage Divider**
-Any ADC Pin. For the supermini it´s pin 0 and 1.
+Any possible ADC Pin.
 
-For most other ESP32 Development Boards pin 30-36. 
+ Type | Pin
+  ----- | -----
+  ESP32 | 34
+  ESP32-S3 | 1
+  ESP32-C3 | 0
+
+For most other ESP32 Development Boards pin 30-36.
 
 ```
 -Supply voltage (max 15V!!!)
