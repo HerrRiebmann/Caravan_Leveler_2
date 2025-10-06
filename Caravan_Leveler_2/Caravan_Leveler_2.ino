@@ -10,14 +10,20 @@ Adafruit_MPU6050 mpu;
 //Webserver
 #include <WiFi.h>
 #include <WebServer.h>
-#include "Credentials.h"
+//#include "Credentials.h"
+
+//Setup WiFi from SerialPort
+#include <ImprovWiFiLibrary.h>
 
 #include <Preferences.h>
 
-String ssid = WIFI_SSID;
-String password = WIFI_PASSWORD;
+// String ssid = WIFI_SSID;
+// String password = WIFI_PASSWORD;
+String ssid = "";
+String password = "";
 
 WebServer webServer(80);
+ImprovWiFi improvSerial(&Serial);
 
 #include <DNSServer.h>
 const byte DNS_PORT = 53;
@@ -50,15 +56,25 @@ uint8_t levelThreshold = 5;
 int invertAxis = 0;
 bool useAcessPointMode = false;
 float voltThreshold = 0.0;
-uint8_t voltagePin = 34;
 int resistor1 = 5100;
 int resistor2 = 1000;
+#if CONFIG_IDF_TARGET_ESP32
+uint8_t voltagePin = 34;
+#elif CONFIG_IDF_TARGET_ESP32C3
+uint8_t voltagePin = 0;
+#elif CONFIG_IDF_TARGET_ESP32S3
+uint8_t voltagePin = 36;
+#else
+#error Target CONFIG_IDF_TARGET is not supported
+#endif
 
 void logPrintLn(const String &msg);
 void logPrint(const String &msg, bool linebreak = false);
 
 void setup() {
   SerialBegin();
+
+  setupImprov();
 
   MPU6050Begin();
 
@@ -82,4 +98,7 @@ void loop() {
 
   //OTA
   OTA_Handle();
+
+  //Improv Setup Wifi by serial:
+  loopImprov();
 }

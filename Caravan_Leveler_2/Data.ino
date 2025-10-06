@@ -7,6 +7,7 @@ void LoadData() {
   LoadLevelThreshold();
   LoadInvertation();
   LoadAP();
+  LoadWiFi();
   LoadSerial();
   LoadVoltageSettings();
 
@@ -45,6 +46,12 @@ void LoadAP() {
     return;
   logPrint(String(F("Loaded AccessPoint: ")));
   logPrintLn(String(useAcessPointMode));
+}
+void LoadWiFi(){
+  ssid = settings.getString("ssid", ssid);
+  password = settings.getString("password", password);
+  logPrint(String(F("Loaded SSID: ")));
+  logPrintLn(ssid);
 }
 void LoadSerial() {
   Serial_Enabled = settings.getBool("serialEnabled", useAcessPointMode);
@@ -89,6 +96,12 @@ void StoreInvertation() {
 void StoreAP() {
   settings.begin("settings", false);
   settings.putBool("useAPMode", useAcessPointMode);
+  settings.end();
+}
+void StoreWiFi(){
+  settings.begin("settings", false);
+  settings.putString("ssid", ssid);
+  settings.putString("password", password);
   settings.end();
 }
 void StoreSerial() {

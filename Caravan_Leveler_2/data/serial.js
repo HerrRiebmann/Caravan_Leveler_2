@@ -3,6 +3,7 @@ let updatesEnabled = true;
 let logBuffer = "";
 let updateInterval = 1000; // Default 1 second
 let intervalId = null;
+let requestFailed = false;
 
 window.onload = () => {
     updateLog();
@@ -14,17 +15,27 @@ async function updateLog() {
         let r = await fetch('/log');
         let t = await r.text();
         if (t.trim().length > 0) {
-            var log = document.getElementById('log');
-            log.innerHTML += t;
-            logBuffer += t;
-            
-            if (autoScroll) {
-                log.scrollTop = log.scrollHeight;
-            }
+            AppendToLog(t);
+            requestFailed = false;
         }
     } catch (error) {
+        if(requestFailed){
+            AppendToLog('Receive Log - ' + error + '\n');
+            return;
+        }
         console.error('Failed to fetch log:', error);
         SetOutput("Failed to fetch serial log", true);
+        requestFailed = true;
+    }
+}
+
+function AppendToLog(newData) {
+    var log = document.getElementById('log');
+    log.innerHTML += newData;
+    logBuffer += newData;
+
+    if (autoScroll) {
+        log.scrollTop = log.scrollHeight;
     }
 }
 

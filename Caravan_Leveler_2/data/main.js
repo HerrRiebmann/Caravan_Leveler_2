@@ -87,34 +87,46 @@ function NavigateMenu(url) {
 function GetInfo() {
     const oRequest = new XMLHttpRequest();
     const sURL = '/espinfo';
-
+    ClearCanvas();
     oRequest.open("GET", sURL, true);
     oRequest.onload = function (e) {
-        if (oRequest.readyState === 4 && oRequest.status === 200) {
-            const div = document.getElementById("espinfo");
-            div.innerHTML = "";
+        if (oRequest.readyState === 4 && oRequest.status === 200) {            
             const arr = oRequest.responseText.split("|");
-            for (let i = 0; i < arr.length; i++) {
-                const vals = arr[i].split(";");
-                const lbl = document.createElement('label');
-                lbl.htmlFor = vals[0];
-                lbl.innerHTML = vals[0];
-                const inp = document.createElement('input');
-                inp.type = "text";
-                inp.id = vals[0];
-                inp.value = vals[1];
-                inp.readOnly = true;
-                div.append(lbl, inp);
-            }
+            AddControlsToCanvas(arr);
             document.getElementById("SaveBtn").style.backgroundColor = colorSuccess;
             ResetControlsDelayed();
         }
     };
     oRequest.onerror = function (e) {
-        SetOutput("Get data failed!", true);
+        SetOutput("Get data failed!", true);        
         document.getElementById("SaveBtn").style.backgroundColor = colorError;
-    };
+        setTimeout(FakeSomeData, 2000);
+    };    
     oRequest.send(null);
+}
+function AddControlsToCanvas(arr) {
+    const div = document.getElementById("espinfo");
+    div.innerHTML = "";
+    for (let i = 0; i < arr.length; i++) {
+        const vals = arr[i].split(";");
+        const lbl = document.createElement('label');
+        lbl.htmlFor = vals[0];
+        lbl.innerHTML = vals[0];
+        const inp = document.createElement('input');
+        inp.type = "text";
+        inp.id = vals[0];
+        inp.value = vals[1];
+        inp.readOnly = true;
+        div.append(lbl, inp);
+    }
+}
+function ClearCanvas(){
+    const div = document.getElementById("espinfo");
+    div.innerHTML = "";
+}
+function FakeSomeData(){
+    var arr = ["Mode;DEMO!","DeviceName;Caravan Leveler","Firmware;v1.2.3","WiFi;Connected","IP;192.168.1.1"];
+    AddControlsToCanvas(arr);
 }
 // ===================== Output Message Queue =====================
 window.OutputMessageQueue = [];
