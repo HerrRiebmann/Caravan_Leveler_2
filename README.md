@@ -18,6 +18,7 @@ This captive portal will force the phone to open up a, usually for login intende
   * [OTA (Over the Air Update)](#OTA-Over-the-Air-Update)
 * [Credentials](#CustomLibrary)
 * [Compatibility](#Compatibility)
+* [Demo](#Demo)
 * [Video](#Video)
 
 ### Intention
@@ -34,7 +35,8 @@ In short: Lazy me doesn´t want to constantly walk to the inside and check the l
 
  * **Upload** loads a file to the SPIFFS. To overwrite existing files, the filename must be equal (see [/data](https://github.com/HerrRiebmann/Caravan_Leveler_2/tree/main/Caravan_Leveler_2/data))!
 
-Or updates the firmware by uploading a *.bin file.
+  * Or updates the firmware by uploading a *.bin file.
+  * Or updates the spiffs with a spiffs.*.bin file.
 
 
 ### Settings
@@ -70,7 +72,7 @@ Advanced Settings:
 
 #### WiFi
 
- * **Use Accesspoint** or connect to an existing WiFi (_SSID and Pasword required in code_)
+ * **Use Accesspoint** or connect to an existing WiFi (_SSID and Pasword required in code or can be set on the web-installer_)
 
  * **Accesspoint PW** Password to secure the Accesspoint access
 
@@ -84,6 +86,14 @@ The Serial is also only implemented for testing purpose.
 
 
 ## Things
+### Installation
+You can download the files here, add the additional libraries and flash them via the Arduino IDE.
+Or you can use the ESP32 Web firmware flash method, which will install all the required components directly onto the ESP.
+
+Currently supported Versions are ESP32, ESP32-S3 & ESP32-C3.
+
+[Caravan Leveler - Web Installer](https://trib.free.nf/flash.html)
+
 ### HardwareComponents
 * ESP32 C3 Supermini (Any other ESP32 will work)
 * MPU6050 (_Accelerometer / Gyro_)
@@ -133,21 +143,13 @@ You can find the latest release [here](https://github.com/me-no-dev/arduino-esp3
 You should see the ESP32 in Arduino IDE under Tools -> Port -> Network-Interfaces (Sport&Fun Leveler at _IP-Adress_)
 For more information see [RandomNerdTutorials](https://randomnerdtutorials.com/esp32-over-the-air-ota-programming/)
 
-### CustomLibrary
-To prevent me from uploading my credentials to this repository, I´ve created a Library with just my WiFi credentials:
-
-**Sketches\libraries\Credentials\Credentials.h**
-
-```
-#pragma once
-
-#define WIFI_SSID "MyWiFiName"
-#define WIFI_PASSWORD "MyWiFiP4$$w0rd"
-```
-
 ## Compatibility
 Installed on ESP32 C3 Supermini, ESP-WROOM-32 DevBoard and ESP32-S3-WROOM-1 DevBoard (with 2 USB-C)
 Tested on Firefox, Chrome & Edge for Windows, iOS and Chrome & Firefox for Android.
+
+## Demo
+The website, which will be hosted on the ESP32 can be tested here:
+[Caravan Leveler 2.0 - Demo](https://trib.free.nf/CaravanLevelerDemo/index.html)
 
 ## Video
 ![Main Menu](/Images/CaravanLeveler.gif)
