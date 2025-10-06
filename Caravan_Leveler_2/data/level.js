@@ -20,6 +20,15 @@ let firstRealValueReceived = false;
 let lastX = 0, lastY = 0; // retained for future enhancements
 
 function SetValue(X, Y, Threshold, Voltage, Temp, isInitial = false) {
+	// When sensor not initialized, force values to 0 and position bubbles at center
+	if (!window.AppState.ADXL345_Initialized && !isInitial) {
+		X = 0;
+		Y = 0;
+		// Remove intro animations to ensure bubbles can be positioned
+		bubbleX.classList.remove('bubble-intro-x');
+		bubbleY.classList.remove('bubble-intro-y');
+	}
+
 	// Limit & normalize (negate for bubble positioning)
 	const tX = Math.max(-Threshold, Math.min(Threshold, X)) * -1;
 	const tY = Math.max(-Threshold, Math.min(Threshold, Y)) * -1;

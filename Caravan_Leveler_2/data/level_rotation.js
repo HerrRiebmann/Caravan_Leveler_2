@@ -83,6 +83,11 @@ function SetImageValues(x, y, threshold, voltage, temp, isInitial = false) {
     rollValue.style.backgroundColor = valueToColor(y, currentThreshold);
     pitchValue.style.backgroundColor = valueToColor(x, currentThreshold);
 
+    // Apply red background when gyro not initialized, transparent when working
+    const bgColor = window.AppState.ADXL345_Initialized ? "" : COLORS.ERROR_BRIGHT_RED;
+    document.getElementById("rollUnit").style.background = bgColor;
+    document.getElementById("pitchUnit").style.background = bgColor;
+
     document.getElementById("Voltage").hidden = parseFloat(voltage) < 1;
     document.getElementById("Voltage").textContent = "⚡" + parseFloat(voltage).toFixed(1) + "V";  
     document.getElementById("Temperature").hidden = parseFloat(temp) === 0.0;
