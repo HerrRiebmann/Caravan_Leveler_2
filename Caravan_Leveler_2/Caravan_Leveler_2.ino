@@ -63,7 +63,7 @@ uint8_t voltagePin = 34;
 #elif CONFIG_IDF_TARGET_ESP32C3
 uint8_t voltagePin = 0;
 #elif CONFIG_IDF_TARGET_ESP32S3
-uint8_t voltagePin = 36;
+uint8_t voltagePin = 2;
 #else
 #error Target CONFIG_IDF_TARGET is not supported
 #endif
