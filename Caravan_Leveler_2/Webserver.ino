@@ -120,9 +120,7 @@ void handle_level() {
   txt.concat("|");
   txt.concat(String(levelThreshold));
   txt.concat("|");
-  txt.concat(String(GetCurrentVoltage()));
-  //txt.concat(String(voltage));
-  //txt.concat(String(analogRead(ANALOG_IN_PIN)));
+  txt.concat(String(GetCurrentVoltage()));  
   txt.concat("|");
   txt.concat(String(temperature));
   webServer.send(200, "text/plain", txt);
@@ -162,6 +160,10 @@ void handle_setup() {
 }
 void handle_calibrate() {  
   logPrintLn("Handle Calibration");
+  if (!accelInitialized) {
+    webServer.send(400, "text/plain", "Gyro not initialized!");
+    return;
+  }
   CalibrateLevel();
   String result = "Calibration OK (";
   result.concat(calibrationX);
@@ -210,6 +212,11 @@ void handle_voltage() {
   word adc_value = analogRead(voltagePin);
   float voltage_adc = ((float)adc_value * REF_VOLTAGE) / ADC_RESOLUTION;
   float voltage_in = voltage_adc * (resistor1 + resistor2) / resistor2;
+  //Nothing setup
+  if(resistor1 + resistor2 == 0){
+    voltage_adc = 0;
+    voltage_in = 0;
+  }
   //Voltage + Threshold | raw value | Voltage input | Voltage without Threshold
   String result = String(voltage_in + voltThreshold);
   result.concat("|");

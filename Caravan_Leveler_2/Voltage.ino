@@ -29,6 +29,9 @@ void InitializeVoltageMeasuring() {
 }
 
 float GetCurrentVoltage() {
+  //Nothing setup, no measurment
+  if(resistor1 + resistor2 == 0)
+    return 0.0;
   // read the analog input
   word adc_value = analogRead(voltagePin);
 
