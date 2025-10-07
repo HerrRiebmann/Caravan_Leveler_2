@@ -17,8 +17,6 @@ void LoadLevel() {
   calibrationX = settings.getFloat("calibrationX", calibrationX);
   calibrationY = settings.getFloat("calibrationY", calibrationY);
 
-  if (!Serial_Enabled)
-    return;
   logPrint("Loaded X: ");
   logPrint(String(calibrationX));
   logPrint(" Y: ");
@@ -27,25 +25,22 @@ void LoadLevel() {
 
 void LoadLevelThreshold() {
   levelThreshold = settings.getInt("levelThreshold", levelThreshold);
-  if (!Serial_Enabled)
-    return;
+
   logPrint("Loaded Threshold: ");
   logPrintLn(String(levelThreshold));
 }
 void LoadInvertation() {
   invertAxis = settings.getInt("invertAxis", invertAxis);
-  if (!Serial_Enabled)
-    return;
+
   logPrint(String(F("Loaded Inverted Axis: ")));
   logPrintLn(String(invertAxis));
 }
 
 void LoadAP() {
   useAcessPointMode = settings.getBool("useAPMode", useAcessPointMode);
-  if (!Serial_Enabled)
-    return;
+  
   logPrint(String(F("Loaded AccessPoint: ")));
-  logPrintLn(String(useAcessPointMode));
+  logPrintLn(useAcessPointMode ? "True" : "False");
 }
 void LoadWiFi(){
   ssid = settings.getString("ssid", ssid);
@@ -55,18 +50,16 @@ void LoadWiFi(){
 }
 void LoadSerial() {
   Serial_Enabled = settings.getBool("serialEnabled", useAcessPointMode);
-  if (!Serial_Enabled)
-    return;
+  
   logPrint(String(F("Serial Output enabled: ")));
-  logPrintLn(String(Serial_Enabled));
+  logPrintLn(Serial_Enabled ? "True": "False");
 }
 void LoadVoltageSettings() {
   voltThreshold = settings.getFloat("voltThreshold", voltThreshold);
   voltagePin = settings.getInt("voltagePin", voltagePin);
   resistor1 = settings.getInt("resistor1", resistor1);
   resistor2 = settings.getInt("resistor2", resistor2);
-  if (!Serial_Enabled)
-    return;
+  
   logPrint(String(F("Loaded Voltage Threshold: ")));
   logPrintLn(String(voltThreshold));
   logPrint(String(F("Pin: ")));

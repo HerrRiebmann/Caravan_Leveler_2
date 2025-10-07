@@ -30,7 +30,8 @@ void WiFiBegin() {
   webServer.collectHeaders(Headers, sizeof(Headers) / sizeof(Headers[0]));
 
   webServer.begin();
-  logPrintLn(F("HTTP webServer started"));
+  if (Serial_Enabled)
+    logPrintLn(F("HTTP webServer started"));
   delay(100);
 }
 
@@ -49,6 +50,8 @@ void ConnectToAccessPoint() {
       return;
     }
   }
+  if (!Serial_Enabled)
+    return;
   logPrintLn("");
   logPrintLn(String(F("WiFi connected successfully")));
   logPrint(String(F("Got IP: ")));
@@ -66,14 +69,16 @@ void CreateAccessPoint() {
     WiFi.softAP(deviceName, devicePassword);
   else
     WiFi.softAP(deviceName);
-  delay(500);
+  delay(200);
   WiFi.softAPConfig(local_ip, gateway, subnet);
-  delay(500);
-  logPrint(String(F("AP IP address: ")));
-  logPrintLn(String(WiFi.softAPIP().toString()));
-  if (strlen(devicePassword) > 1) {
-    logPrint("AP Password: ");
-    logPrintLn(devicePassword);
+  delay(200);
+  if (Serial_Enabled) {
+    logPrint(String(F("AP IP address: ")));
+    logPrintLn(String(WiFi.softAPIP().toString()));
+    if (strlen(devicePassword) > 1) {
+      logPrint("AP Password: ");
+      logPrintLn(devicePassword);
+    }
   }
 
   /* Setup the DNS webServer redirecting all the domains to the apIP */
@@ -128,7 +133,7 @@ void handle_level() {
 void handle_setup() {
   // /setup
   if (Serial_Enabled)
-    Serial.println(F("Handle Setup"));
+    logPrintLn("Handle Setup");
 
   //With arguments:
   // /setup?x=123&y=321&inv=0&ap=1
@@ -155,9 +160,8 @@ void handle_setup() {
   txt.concat(String(devicePassword));
   webServer.send(200, "text/plain", txt);
 }
-void handle_calibrate() {
-  if (Serial_Enabled)
-    Serial.println(F("Handle Calibration"));
+void handle_calibrate() {  
+  logPrintLn("Handle Calibration");
   CalibrateLevel();
   String result = "Calibration OK (";
   result.concat(calibrationX);
@@ -189,7 +193,7 @@ void handle_data() {
   result.concat(String(a.acceleration.z));
   webServer.send(200, "text/plaint", result);
   if (Serial_Enabled)
-    Serial.println(result);
+    logPrintLn(result);
   ResetWebTimer();
 }
 void handle_reset() {
@@ -269,7 +273,7 @@ void handle_esp() {
 }
 void handleNotFound() {
   if (Serial_Enabled) {
-    Serial.println(F("HandleNotFound"));
+    logPrintLn("HandleNotFound");
     PrintIncomingRequest();
   }
 
@@ -295,15 +299,16 @@ void handleNotFound() {
 
 void handle_success() {
   if (Serial_Enabled)
-    Serial.println(F("Handle success.txt"));
+    logPrintLn("Handle success.txt");
   webServer.send(200, "text/plain", "success");
 }
 
-boolean captivePortal() {
-  Serial.print(F("Captive Check: "));
-  Serial.println(webServer.hostHeader());
-  if (!isIp(webServer.hostHeader())) {
-    Serial.println("-Request redirected to captive portal");
+boolean captivePortal() {  
+  logPrint("Captive Check: ");
+  logPrintLn(webServer.hostHeader());
+  
+  if (!isIp(webServer.hostHeader())) {    
+    logPrintLn("-Request redirected to captive portal");
     redirect();
     return true;
   }
@@ -317,13 +322,13 @@ void redirect() {
 }
 
 void PrintIncomingRequest() {
-  Serial.println(webServer.hostHeader());
-  Serial.print("  ");
-  Serial.println(webServer.uri());
+  logPrintLn(webServer.hostHeader());
+  logPrint("  ");
+  logPrintLn(webServer.uri());
 
   for (uint8_t i = 0; i < webServer.args(); i++)
-    Serial.println(String(F(" ")) + webServer.argName(i) + F(": ") + webServer.arg(i) + F("\n"));
+    logPrintLn(String(F(" ")) + webServer.argName(i) + F(": ") + webServer.arg(i) + F("\n"));
 
   for (int i = 0; i < webServer.headers(); i++)
-    Serial.println(String(F("\t")) + webServer.headerName(i) + F(": ") + webServer.header(i));
+    logPrintLn(String(F("\t")) + webServer.headerName(i) + F(": ") + webServer.header(i));
 }

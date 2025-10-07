@@ -1,5 +1,16 @@
 void setupImprov() {
-  improvSerial.setDeviceInfo(ImprovTypes::ChipFamily::CF_ESP32, "ImprovWiFiLib", "2025.10.0", "CaravanLeveler", "http://{LOCAL_IPV4}");
+  String buildStr = ArduinoDateToDisplayDate(__DATE__);
+
+#if CONFIG_IDF_TARGET_ESP32
+improvSerial.setDeviceInfo(ImprovTypes::ChipFamily::CF_ESP32, deviceName, buildStr.c_str(), WiFi.getHostname(), "http://{LOCAL_IPV4}");
+#elif CONFIG_IDF_TARGET_ESP32C3
+improvSerial.setDeviceInfo(ImprovTypes::ChipFamily::CF_ESP32_C3, deviceName, buildStr.c_str(), WiFi.getHostname(), "http://{LOCAL_IPV4}");
+#elif CONFIG_IDF_TARGET_ESP32S3
+improvSerial.setDeviceInfo(ImprovTypes::ChipFamily::CF_ESP32_S3, deviceName, buildStr.c_str(), WiFi.getHostname(), "http://{LOCAL_IPV4}");
+#else
+#error Target CONFIG_IDF_TARGET is not supported
+#endif
+
   improvSerial.onImprovError(onImprovWiFiErrorCb);
   improvSerial.onImprovConnected(onImprovWiFiConnectedCb);
   improvSerial.setCustomConnectWiFi(connectWifi);  // Optional
@@ -8,15 +19,10 @@ void setupImprov() {
 void loopImprov() {
   //Is Wifi not set:
   improvSerial.handleSerial();
-
-  if (improvSerial.isConnected()) {
-    //handleHttpRequest();
-  }
 }
 
 void onImprovWiFiErrorCb(ImprovTypes::Error err) {
-  // server.stop();
-  // blink_led(2000, 3);
+  // server.stop();  
   logPrint("Improv Err: ");
   logPrintLn(String(err));
 }
@@ -26,20 +32,13 @@ void onImprovWiFiConnectedCb(const char *_ssid, const char *_password) {
   ssid = _ssid;
   password = _password;
   StoreWiFi();
-
-  // server.begin();
-  // blink_led(100, 3);
 }
 
 bool connectWifi(const char *_ssid, const char *_password) {
   ssid = _ssid;
-  password = _password;
-  //WiFi.begin(ssid, password);
+  password = _password;  
   useAcessPointMode = false;
   WiFiBegin();
 
-  while (!improvSerial.isConnected()) {
-    //blink_led(500, 1);
-  }
-  return true;
+  return improvSerial.isConnected();
 }

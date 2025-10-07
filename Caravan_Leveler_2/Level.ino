@@ -13,8 +13,6 @@ void getLevel() {
   //Calibrate
   temperature = temp.temperature;
 
-  if (!Serial_Enabled)
-    return;
   Serial.print("X: ");
   Serial.print(pitch);
   Serial.print(" Y: ");
@@ -39,8 +37,6 @@ void CalibrateLevel() {
   calibrationY = atan2(-a.acceleration.y, a.acceleration.z) * 180 / PI;
   StoreLevel();
 
-  if (!Serial_Enabled)
-    return;
   logPrint("Calibrated to X: ");
   logPrint(String(calibrationX));
   logPrint(" Y: ");

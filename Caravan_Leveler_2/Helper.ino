@@ -14,9 +14,7 @@ void MPU6050Begin() {
   mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
   mpu.setGyroRange(MPU6050_RANGE_500_DEG);
   mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
-  if (!Serial_Enabled)
-    return;
-
+  
   logPrint("Accelerometer range set to: ");
   switch (mpu.getAccelerometerRange()) {
     case MPU6050_RANGE_2_G:
@@ -97,9 +95,8 @@ bool ProcessETag(const char* ETag) {
   for (int i = 0; i < webServer.headers(); i++) {
     if (webServer.headerName(i).compareTo(F("If-None-Match")) == 0)
       if (webServer.header(i).compareTo(ETag) == 0) {
-        webServer.send(304, "text/plain", F("Not Modified"));
-        if (Serial_Enabled)
-          logPrintLn(String(F("\t")) + webServer.headerName(i) + F(": ") + webServer.header(i));
+        webServer.send(304, "text/plain", F("Not Modified"));        
+        logPrintLn(String(F("\t")) + webServer.headerName(i) + F(": ") + webServer.header(i));
         return true;
       }
   }
@@ -113,9 +110,8 @@ void ProcessSetupArguments() {
 
   bool voltageChanged = false;
 
-  for (uint8_t i = 0; i < webServer.args(); i++) {
-    if (Serial_Enabled)
-      logPrintLn(String(F(" ")) + webServer.argName(i) + F(": ") + webServer.arg(i));
+  for (uint8_t i = 0; i < webServer.args(); i++) {    
+    logPrintLn(String(F(" ")) + webServer.argName(i) + F(": ") + webServer.arg(i));
 
     if (webServer.argName(i).compareTo(F("inv")) == 0) {
       invertAxis = webServer.arg(i).toInt();
@@ -161,9 +157,8 @@ void ProcessSetupArguments() {
     StoreVoltageSettings();
 }
 
-String toStringIp(IPAddress ip) {
-  if (Serial_Enabled)
-    logPrintLn("IptoString");
+String toStringIp(IPAddress ip) {  
+  logPrintLn("IptoString");
   String res = "";
   for (int i = 0; i < 3; i++) {
     res += String((ip >> (8 * i)) & 0xFF) + ".";
@@ -206,7 +201,24 @@ const String formatBytes(size_t const& bytes) {
                                                                                        : static_cast<String>(bytes / 1048576.0) + " MB")
          + ")";
 }
+// Adapted from http://stackoverflow.com/questions/1765014/convert-string-from-date-into-a-time-t
+// Formats __DATE__ to YYYY.MM.DD format
+String ArduinoDateToDisplayDate(char const *time) { 
+    char s_month[5];
+    int month, day, year;
+    static const char month_names[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
 
+    sscanf(time, "%s %d %d", s_month, &day, &year);
+
+    month = (strstr(month_names, s_month)-month_names)/3;
+    //Starting at 0
+    month += 1;
+
+    String monthText = month < 10 ? "0" + String(month) : String(month);
+    String dayText = day < 10 ? "0" + String(day) : String(day);
+
+    return String(year) + "." + monthText + "." + dayText;
+}
 void ResetWebTimer() {
   lastMillisClientAvailable = millis();
   voltage_read = false;
@@ -216,6 +228,8 @@ void logPrintLn(const String& msg) {
 }
 
 void logPrint(const String& msg, bool linebreak) {
+  if(!Serial_Enabled)
+    return;
   logBuffer.concat(msg);
   if (linebreak) {
     Serial.println(msg);

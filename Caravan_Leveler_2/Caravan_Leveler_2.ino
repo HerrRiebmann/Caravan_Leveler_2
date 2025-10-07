@@ -1,3 +1,4 @@
+#define DEBUG true
 //Gyro Adafruit MPU6050
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
@@ -10,17 +11,20 @@ Adafruit_MPU6050 mpu;
 //Webserver
 #include <WiFi.h>
 #include <WebServer.h>
-//#include "Credentials.h"
 
 //Setup WiFi from SerialPort
 #include <ImprovWiFiLibrary.h>
 
 #include <Preferences.h>
 
-// String ssid = WIFI_SSID;
-// String password = WIFI_PASSWORD;
+#if DEBUG
+#include <Credentials.h>
+String ssid = WIFI_SSID;
+String password = WIFI_PASSWORD;
+#elif
 String ssid = "";
 String password = "";
+#endif
 
 WebServer webServer(80);
 ImprovWiFi improvSerial(&Serial);

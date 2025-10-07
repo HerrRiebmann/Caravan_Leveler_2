@@ -19,9 +19,8 @@ void handleFileRead() {
   String path = webServer.uri();
   handleFileReadByName(path);
 }
-void handleFileReadByName(String path) {
-  if (Serial_Enabled)
-    logPrint("Handle FileRead: " + path, true);
+void handleFileReadByName(String path) {  
+  logPrint("Handle FileRead: " + path, true);
 
   // If a folder is requested, send index.html
   if (path.endsWith("/"))
@@ -42,17 +41,14 @@ void handleFileReadByName(String path) {
       return;
     }
     size_t sent = webServer.streamFile(file, getContentType(path));
-    file.close();
-    if (Serial_Enabled) {
-      logPrint(String("\tSent file: ") + path);
-      logPrint(" " + String(sent), true);
-    }
+    file.close();    
+    logPrint(String("\tSent file: ") + path);
+    logPrintLn(" " + String(sent));    
     return;
   }
 
-  handleNotFound();
-  if (Serial_Enabled)
-    logPrint(String("\tFile Not Found: ") + path, true);
+  handleNotFound();  
+  logPrintLn(String("\tFile Not Found: ") + path);
 }
 
 File fsUploadFile;
@@ -61,7 +57,7 @@ void handle_fileupload(HTTPUpload& upload) {
     String filename = upload.filename;
     if (!filename.startsWith("/"))
       filename = "/" + filename;
-
+    
     logPrint("handleFileUpload: ");
     logPrintLn(filename);
 
@@ -77,9 +73,9 @@ void handle_fileupload(HTTPUpload& upload) {
       fsUploadFile.write(upload.buf, upload.currentSize);
   } else if (upload.status == UPLOAD_FILE_END) {
     if (fsUploadFile) {
-      fsUploadFile.close();
+      fsUploadFile.close();      
       logPrint("handleFileUpload Size: ");
-      logPrintLn(String(upload.totalSize));
+      logPrintLn(String(upload.totalSize));      
       // Redirect the client to the root page
       webServer.setContentLength(CONTENT_LENGTH_UNKNOWN);
       webServer.sendHeader("Connection", "close");

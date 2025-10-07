@@ -73,12 +73,7 @@ void OTA_Handle() {
 }
 
 void handle_update_Spiffs(HTTPUpload& upload) {  
-  // if (upload.status == UPLOAD_FILE_START) {
-  //   Update.begin(UPDATE_SIZE_UNKNOWN, U_SPIFFS);
-  // } else if (upload.status == UPLOAD_FILE_WRITE) {
-  //   Update.write(upload.buf, upload.currentSize);
-  // }
-
+  
   if (upload.status == UPLOAD_FILE_START) {
     Serial.println("SPIFFSUpdate: " + String(upload.filename.c_str()));
     if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_SPIFFS)) {  //start with max available size
