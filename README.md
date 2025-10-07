@@ -33,7 +33,7 @@ In short: Lazy me doesn´t want to constantly walk to the inside and check the l
 
 ![Main Menu](/Images/MainMenu.png)
 
- * **Upload** loads a file to the SPIFFS. To overwrite existing files, the filename must be equal (see [/data](https://github.com/HerrRiebmann/Caravan_Leveler_2/tree/main/Caravan_Leveler_2/data))!
+ * **Upload** loads a file to the SPIFFS filesystem. To overwrite existing files, the filename must be equal (see [/data](https://github.com/HerrRiebmann/Caravan_Leveler_2/tree/main/Caravan_Leveler_2/data))!
 
   * Or updates the firmware by uploading a *.bin file.
   * Or updates the spiffs with a spiffs.*.bin file.
@@ -88,17 +88,20 @@ The Serial is also only implemented for testing purpose.
 ## Things
 ### Installation
 You can download the files here, add the additional libraries and flash them via the Arduino IDE. All Libraries & Tools mentioned below.
-Or you can use the ESP32 Web firmware flash method, which will install all the required components directly onto the ESP.
+Or you can use the ESP32 Web firmware flash-method, which will install all the required components directly onto the ESP.
 
 Currently supported Versions are ESP32, ESP32-S3 & ESP32-C3.
 
 [Caravan Leveler - Web Installer](https://trib.free.nf/flash.html)
 
+This makes use of the [ESP Web Tools](https://esphome.github.io/esp-web-tools/) from ESPhome, hosted on unpkg.com.
+
 ### HardwareComponents
 * ESP32 C3 Supermini (Any other ESP32 will work)
 * MPU6050 (_Accelerometer / Gyro_)
 * LM2596 (_DC-DC converter_)
-* 5.2k & 1k Ohm Resistor
+* 5.2k & 1k Ohm Resistor (_For measuring voltage_)
+* 2 Diodes to prevent voltage reversing (_like SR560 or SB5100_)
 
 ### Wiring
 Wiring for my tested ESP32 types. Check the I2C pinout for your board!
@@ -118,7 +121,7 @@ VIN 5V | OUT+
 GND | OUT-
 
 **Voltage Divider**
-Any possible ADC Pin.
+Any possible ADC Pin can be used. Please check it with the pinout for your device from the ESP32-family.
 
  Type | Pin
   ----- | -----
@@ -142,13 +145,15 @@ For most other ESP32 Development Boards pin 30-36.
 To upload the HTML, JS and CSS files, I´ve used the [Arduino ESP32 filesystem uploader](https://github.com/me-no-dev/arduino-esp32fs-plugin)
 You can find the latest release [here](https://github.com/me-no-dev/arduino-esp32fs-plugin/releases/) and a tutorial on [RandomNerdTutorials](https://randomnerdtutorials.com/install-esp32-filesystem-uploader-arduino-ide/)
 
-### Libraries
-* Adafruit_MPU6050.h (2.2.6)
-* Adafruit Unified Sensor (1.1.15)
+For **Arduino IDE 2.X** use the VSIX from [arduino-spiffs-upload](https://github.com/espx-cz/arduino-spiffs-upload) 
 
+### Libraries
+* Adafruit_MPU6050.h ([2.2.6](https://github.com/adafruit/Adafruit_MPU6050))
+* Adafruit Unified Sensor ([1.1.15](https://github.com/adafruit/Adafruit_Sensor))
+* Improv WiFi Library ([0.0.1](https://github.com/jnthas/Improv-WiFi-Library))
 
 ### OTA (Over the Air Update)
-You should see the ESP32 in Arduino IDE under Tools -> Port -> Network-Interfaces (Sport&Fun Leveler at _IP-Adress_)
+You should see the ESP32 in Arduino IDE under Tools -> Port -> Network-Interfaces (Caravan Leveler at _IP-Adress_)
 For more information see [RandomNerdTutorials](https://randomnerdtutorials.com/esp32-over-the-air-ota-programming/)
 
 ## Compatibility
