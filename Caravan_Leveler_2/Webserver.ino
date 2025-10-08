@@ -36,8 +36,13 @@ void WiFiBegin() {
 }
 
 void ConnectToAccessPoint() {
+  if(ssid == ""){
+    logPrintLn("SSID empty! Fallback to AP");
+    CreateAccessPoint();
+    return;
+  }
   logPrint("Connect to: ");
-  logPrint(ssid, true);
+  logPrintLn(ssid);
   WiFi.begin(ssid, password);
 
   long start = millis();

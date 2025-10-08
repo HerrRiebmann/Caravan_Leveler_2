@@ -49,7 +49,7 @@ void LoadWiFi(){
   logPrintLn(ssid);
 }
 void LoadSerial() {
-  Serial_Enabled = settings.getBool("serialEnabled", useAcessPointMode);
+  Serial_Enabled = settings.getBool("serialEnabled", Serial_Enabled);
   
   logPrint(String(F("Serial Output enabled: ")));
   logPrintLn(Serial_Enabled ? "True": "False");

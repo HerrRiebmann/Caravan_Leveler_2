@@ -27,14 +27,15 @@ void onImprovWiFiErrorCb(ImprovTypes::Error err) {
   logPrintLn(String(err));
 }
 
-void onImprovWiFiConnectedCb(const char *_ssid, const char *_password) {
+void onImprovWiFiConnectedCb(const char *_ssid, const char *_password) {  
   // Save ssid and password here
+  logPrintLn("WiFi configured via Web-Installer");  
   ssid = _ssid;
   password = _password;
   StoreWiFi();
 }
 
-bool connectWifi(const char *_ssid, const char *_password) {
+bool connectWifi(const char *_ssid, const char *_password) {  
   ssid = _ssid;
   password = _password;  
   useAcessPointMode = false;

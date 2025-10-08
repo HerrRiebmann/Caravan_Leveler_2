@@ -1,4 +1,4 @@
-#define DEBUG true
+#define DEBUG false
 //Gyro Adafruit MPU6050
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
@@ -21,7 +21,7 @@ Adafruit_MPU6050 mpu;
 #include <Credentials.h>
 String ssid = WIFI_SSID;
 String password = WIFI_PASSWORD;
-#elif
+#else
 String ssid = "";
 String password = "";
 #endif
