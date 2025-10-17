@@ -11,6 +11,8 @@
 /* Base */
 html { font-family: Helvetica; display:inline-block; margin:0 auto; text-align:center; color:#fff; height:100%; }
 body { height:95%; margin:0; }
+
+
 h1 { color: var(--brand); padding:1vh; text-shadow:2px 2px #e1e4e8; margin:0 0 .5rem 0; }
 p { font-size:1rem; }
 

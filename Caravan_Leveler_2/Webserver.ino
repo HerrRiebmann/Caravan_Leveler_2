@@ -15,6 +15,7 @@ void WiFiBegin() {
   webServer.on("/voltage", handle_voltage);
   webServer.on("/log", handle_log);
   webServer.on("/upload", HTTP_POST, handle_upload_finish, handle_upload);
+  webServer.on("/logger.js", handle_emptyfile);
 
   //Allways redirect to captive portal. Request comes with IP (8.8.8.8) or URL (connectivitycheck.XXX / captive.apple / etc.)
   webServer.on("/generate_204", redirect);  //Android captive portal.
@@ -134,9 +135,8 @@ void handle_level() {
 }
 
 void handle_setup() {
-  // /setup
-  if (Serial_Enabled)
-    logPrintLn("Handle Setup");
+  // /setup  
+  logPrintLn("Handle Setup");
 
   //With arguments:
   // /setup?x=123&y=321&inv=0&ap=1
@@ -273,6 +273,13 @@ void handle_upload() {
     handle_update_Spiffs(upload);
   if (!UploadIsOTA && !UploadIsSPIFFS)
     handle_fileupload(upload);
+}
+
+void handle_emptyfile() {
+  logPrint("Handle Empty File: ");
+  String path = webServer.uri();
+  logPrintLn(path);
+  webServer.send(200, "application/javascript", "");
 }
 
 #include <rom/rtc.h>

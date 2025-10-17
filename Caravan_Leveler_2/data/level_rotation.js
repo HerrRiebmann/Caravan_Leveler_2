@@ -6,6 +6,8 @@ let rollScaleBuilt = false, pitchScaleBuilt = false;
 let firstRealValueReceivedImages = false;
 let scaleUpdatedWithRealThreshold = false; // ensures we rebuild the scale only once with the real threshold
 
+//Console debug output
+let consoleOutputEnabled = false;
 // Mobile device gyroscope support for image leveler
 let gyroManagerImages = null;
 
@@ -100,7 +102,8 @@ function GetLevelImage() {
 function safeLogImages() {
 	if (typeof console !== 'undefined' && console.log) {
 		try {
-			console.log.apply(console, arguments);
+            if (consoleOutputEnabled)
+			    console.log.apply(console, arguments);
 		} catch (e) {
 			// Ignore console errors in Edge
 		}

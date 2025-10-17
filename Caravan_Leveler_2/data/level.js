@@ -1,5 +1,7 @@
 "use strict";
 let bubbleX, bubbleY, valueX, valueY;
+//Console debug output
+let consoleOutputEnabled = false;
 // Mobile device gyroscope support
 let gyroManager = null;
 
@@ -37,7 +39,8 @@ document.addEventListener("DOMContentLoaded", function () {
 function safeLog() {
 	if (typeof console !== 'undefined' && console.log) {
 		try {
-			console.log.apply(console, arguments);
+			if (consoleOutputEnabled)
+				console.log.apply(console, arguments);
 		} catch (e) {
 			// Ignore console errors in Edge
 		}
