@@ -33,7 +33,7 @@ In short: Lazy me doesn´t want to constantly walk to the inside and check the l
 
 ![Main Menu](/Images/MainMenu.png)
 
- * **Upload** loads a file to the SPIFFS filesystem. To overwrite existing files, the filename must be equal (see [/data](https://github.com/HerrRiebmann/Caravan_Leveler_2/tree/main/Caravan_Leveler_2/data))!
+ * **Upload** loads a file to the SPIFFS filesystem. To overwrite existing files, the filename must be equal (see [/data](https://github.com/HerrRiebmann/Caravan_Leveler_2/tree/main/Caravan_Leveler_2/data))! The filenames are case sensitive!
 
   * Or updates the firmware by uploading a *.bin file.
   * Or updates the spiffs with a spiffs.*.bin file.
@@ -144,11 +144,15 @@ For most other ESP32 Development Boards pin 30-36.
 ### Schematic
 ![Schematic](/Images/Schematic.png)
 
+Diodes to secure the parts from reversed polarity were highly recommended!
+
 ### SPIFFS Upload
 To upload the HTML, JS and CSS files, I´ve used the [Arduino ESP32 filesystem uploader](https://github.com/me-no-dev/arduino-esp32fs-plugin)
 You can find the latest release [here](https://github.com/me-no-dev/arduino-esp32fs-plugin/releases/) and a tutorial on [RandomNerdTutorials](https://randomnerdtutorials.com/install-esp32-filesystem-uploader-arduino-ide/)
 
 For **Arduino IDE 2.X** use the VSIX from [arduino-spiffs-upload](https://github.com/espx-cz/arduino-spiffs-upload) 
+
+_This is only necessary if you want to compile the code yourself and upload the webinterface to the ESP32 afterwards._
 
 ### Libraries
 * Adafruit_MPU6050.h ([2.2.6](https://github.com/adafruit/Adafruit_MPU6050))
