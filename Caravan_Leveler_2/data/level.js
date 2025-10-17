@@ -1,5 +1,9 @@
 "use strict";
 let bubbleX, bubbleY, valueX, valueY;
+// Mobile device gyroscope support
+let gyroManager = null;
+
+// Initialize gyroscope manager when page loads
 document.addEventListener("DOMContentLoaded", function () {
 	bubbleX = document.getElementById('bubbleX');
 	bubbleY = document.getElementById('bubbleY');
@@ -11,10 +15,94 @@ document.addEventListener("DOMContentLoaded", function () {
 	bubbleX.classList.add('bubble-intro-x');
 	bubbleY.classList.add('bubble-intro-y');
 	SetValue(0, 0, 10, "00.0", "00.0", true);
+	
+	// Initialize gyroscope manager
+	if (typeof GyroManager !== 'undefined') {
+		gyroManager = new GyroManager({
+			identifier: 'bubble-level',
+			onGyroData: (pitch, roll, threshold, voltage, temp) => {
+				SetValue(pitch, roll, threshold, voltage, temp);
+			},
+			onStatusUpdate: (message, isError) => {
+				SetOutput(message, isError);
+			},
+			onFallbackToSimulation: () => {
+				fallbackToSimulation();
+			},
+			logFunction: safeLog
+		});
+	}
 });
+// Safe console logging for browser compatibility
+function safeLog() {
+	if (typeof console !== 'undefined' && console.log) {
+		try {
+			console.log.apply(console, arguments);
+		} catch (e) {
+			// Ignore console errors in Edge
+		}
+	}
+}
+
 function simulateRandomMovement() {
-	const maxVal = 10;	
-	SetValue(Math.random() * maxVal * 2 - maxVal, Math.random() * maxVal * 2 - maxVal, maxVal, 12.4, 22.8);
+	const maxVal = 10;
+	const x = Math.random() * maxVal * 2 - maxVal;
+	const y = Math.random() * maxVal * 2 - maxVal;
+	safeLog('Simulating movement:', x.toFixed(2), y.toFixed(2));
+	SetValue(x, y, maxVal, 12.4, 22.8);
+}
+
+function fallbackToSimulation() {
+	safeLog('Starting PC simulation mode');
+	
+	// Set status message only once using gyroManager if available
+	if (gyroManager) {
+		gyroManager.setStatusOnce("PC demo mode", false);
+	} else {
+		SetOutput("PC demo mode", false);
+	}
+	
+	// Clear any existing interval
+	if (gyroManager && gyroManager.mobileGyroInterval) {
+		clearInterval(gyroManager.mobileGyroInterval);
+		gyroManager.mobileGyroInterval = null;
+	}
+	
+	// Start the simulation with error handling for Edge
+	try {
+		const interval = setInterval(() => {
+			safeLog('Running simulation tick');
+			simulateRandomMovement();
+		}, 1000);
+		
+		if (gyroManager) {
+			gyroManager.mobileGyroInterval = interval;
+		}
+	} catch (e) {
+		safeLog('Error starting interval, trying alternative approach');
+		// Fallback for Edge if setInterval fails
+		setTimeout(function runSimulation() {
+			simulateRandomMovement();
+			setTimeout(runSimulation, 1000);
+		}, 1000);
+	}
+	
+	// Show gyro permission button only for iOS devices that might need permission
+	const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+	const hasPermissionAPI = typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function';
+	
+	if (gyroManager && gyroManager.isMobileDevice() && isIOS && hasPermissionAPI) {
+		gyroManager.showGyroPermissionButton();
+		safeLog('Showing gyro permission button for iOS device');
+	}
+	
+	safeLog('PC simulation started');
+}
+
+function requestGyroManually() {
+	if (gyroManager) {
+		gyroManager.requestGyroManually();
+	}
 }
 let firstRealValueReceived = false;
 let lastX = 0, lastY = 0; // retained for future enhancements
@@ -83,11 +171,17 @@ function hsl_col_perc(percent, start, end) {
 	return 'hsl(' + c + ', 100%, 50%)';
 }
 function GetLevel() {
-	if (window.AppState.PCVersion) return;
+	// If we're already in PC version mode and simulation is running, don't make web requests
+	if (window.AppState.PCVersion && (gyroManager && (gyroManager.isGyroActive() || gyroManager.hasSimulationInterval()))) return;
+	
 	if (!window.AppState.ADXL345_Initialized) return;
 
 	const oRequest = new XMLHttpRequest();
 	const sURL = '/level';
+	
+	// Set a timeout for Edge compatibility
+	oRequest.timeout = 5000;
+	
 	oRequest.open("GET", sURL, true);
 	oRequest.onload = function (e) {
 		if (oRequest.readyState === 4) {
@@ -106,11 +200,32 @@ function GetLevel() {
 			}
 		}
 	};
-	oRequest.onerror = function (e) {
+	
+	// Enhanced error handling for Edge
+	function handleRequestError() {
+		safeLog('Web request failed, switching to PC mode');
 		window.AppState.PCVersion = true;
-		// Simple random values for PC demo
-		setInterval(() => simulateRandomMovement(), 1000);
-		SetOutput("PC demo mode", false);
-	};
-	oRequest.send(null);
+		
+		safeLog('Is mobile device:', gyroManager ? gyroManager.isMobileDevice() : 'gyroManager not available');
+		
+		// Check if we're on a mobile device and can use gyroscope
+		if (gyroManager && gyroManager.isMobileDevice()) {
+			safeLog('Requesting gyroscope permission for mobile device');
+			gyroManager.requestGyroPermission();
+		} else {
+			// Fallback to simple random values for PC demo
+			safeLog('Starting PC simulation');
+			fallbackToSimulation();
+		}
+	}
+	
+	oRequest.onerror = handleRequestError;
+	oRequest.ontimeout = handleRequestError;
+	
+	try {
+		oRequest.send(null);
+	} catch (e) {
+		safeLog('Exception during request send:', e);
+		handleRequestError();
+	}
 }

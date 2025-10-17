@@ -6,6 +6,9 @@ let rollScaleBuilt = false, pitchScaleBuilt = false;
 let firstRealValueReceivedImages = false;
 let scaleUpdatedWithRealThreshold = false; // ensures we rebuild the scale only once with the real threshold
 
+// Mobile device gyroscope support for image leveler
+let gyroManagerImages = null;
+
 document.addEventListener("DOMContentLoaded", () => {
     rollImage = document.getElementById('rollImage');
     pitchImage = document.getElementById('pitchImage');
@@ -14,13 +17,37 @@ document.addEventListener("DOMContentLoaded", () => {
     // Persist that user is currently viewing image leveler
     try { localStorage.setItem('levelerMode','images'); } catch(e) {}
     SetImageValues(0, 0, currentThreshold, "00.0", "00.0", true);
+    
+    // Initialize gyroscope manager for images
+    if (typeof GyroManager !== 'undefined') {
+        gyroManagerImages = new GyroManager({
+            identifier: 'image-level',
+            threshold: currentThreshold,
+            onGyroData: (pitch, roll, threshold, voltage, temp) => {
+                SetImageValues(pitch, roll, threshold, voltage, temp);
+            },
+            onStatusUpdate: (message, isError) => {
+                SetOutput(message, isError);
+            },
+            onFallbackToSimulation: () => {
+                fallbackToSimulationImages();
+            },
+            logFunction: safeLogImages
+        });
+    }
 });
 
 function GetLevelImage() {
-    if (window.AppState.PCVersion) return; // in PC demo we'll start random simulation below
+    // If we're already in PC version mode and simulation is running, don't make web requests
+    if (window.AppState.PCVersion && (gyroManagerImages && (gyroManagerImages.isGyroActive() || gyroManagerImages.hasSimulationInterval()))) return;
+    
     if (!window.AppState.ADXL345_Initialized) return; // wait until sensor ready
 
     const req = new XMLHttpRequest();
+    
+    // Set a timeout for Edge compatibility
+    req.timeout = 5000;
+    
     req.open("GET", "/level", true);
     req.onload = () => {
         if (req.readyState === 4) {
@@ -39,18 +66,106 @@ function GetLevelImage() {
             }
         }
     };
-    req.onerror = () => {
-        // Switch to demo mode on PC
+    
+    // Enhanced error handling for Edge
+    function handleImageRequestError() {
+        safeLogImages('Image web request failed, switching to PC mode');
         window.AppState.PCVersion = true;
-        SetOutput("PC demo mode", false);
-        setInterval(simulateRandomMovementImages, 1000);
-    };
-    req.send(null);
+        
+        safeLogImages('Is mobile device (images):', gyroManagerImages ? gyroManagerImages.isMobileDevice() : 'gyroManagerImages not available');
+        
+        // Check if we're on a mobile device and can use gyroscope
+        if (gyroManagerImages && gyroManagerImages.isMobileDevice()) {
+            safeLogImages('Requesting gyroscope permission for mobile device (images)');
+            gyroManagerImages.requestGyroPermission();
+        } else {
+            // Fallback to simple random values for PC demo
+            safeLogImages('Starting PC image simulation');
+            fallbackToSimulationImages();
+        }
+    }
+    
+    req.onerror = handleImageRequestError;
+    req.ontimeout = handleImageRequestError;
+    
+    try {
+        req.send(null);
+    } catch (e) {
+        safeLogImages('Exception during image request send:', e);
+        handleImageRequestError();
+    }
+}
+
+// Safe console logging for browser compatibility
+function safeLogImages() {
+	if (typeof console !== 'undefined' && console.log) {
+		try {
+			console.log.apply(console, arguments);
+		} catch (e) {
+			// Ignore console errors in Edge
+		}
+	}
 }
 
 function simulateRandomMovementImages() {
-    const maxVal = currentThreshold;    
-    SetImageValues(Math.random() * maxVal * 2 - maxVal, Math.random() * maxVal * 2 - maxVal, maxVal, 12.4, 22.8);
+    const maxVal = currentThreshold;
+    const x = Math.random() * maxVal * 2 - maxVal;
+    const y = Math.random() * maxVal * 2 - maxVal;
+    safeLogImages('Simulating image movement:', x.toFixed(2), y.toFixed(2));
+    SetImageValues(x, y, maxVal, 12.4, 22.8);
+}
+
+function fallbackToSimulationImages() {
+	safeLogImages('Starting PC simulation mode (images)');
+	
+	// Set status message only once using gyroManagerImages if available
+	if (gyroManagerImages) {
+		gyroManagerImages.setStatusOnce("PC demo mode", false);
+	} else {
+		SetOutput("PC demo mode", false);
+	}
+	
+	// Clear any existing interval
+	if (gyroManagerImages && gyroManagerImages.mobileGyroInterval) {
+		clearInterval(gyroManagerImages.mobileGyroInterval);
+		gyroManagerImages.mobileGyroInterval = null;
+	}
+	
+	// Start the simulation with error handling for Edge
+	try {
+		const interval = setInterval(() => {
+			safeLogImages('Running image simulation tick');
+			simulateRandomMovementImages();
+		}, 1000);
+		
+		if (gyroManagerImages) {
+			gyroManagerImages.mobileGyroInterval = interval;
+		}
+	} catch (e) {
+		safeLogImages('Error starting interval, trying alternative approach');
+		// Fallback for Edge if setInterval fails
+		setTimeout(function runImageSimulation() {
+			simulateRandomMovementImages();
+			setTimeout(runImageSimulation, 1000);
+		}, 1000);
+	}
+	
+	// Show gyro permission button only for iOS devices that might need permission
+	const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+	const hasPermissionAPI = typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function';
+	
+	if (gyroManagerImages && gyroManagerImages.isMobileDevice() && isIOS && hasPermissionAPI) {
+		gyroManagerImages.showGyroPermissionButton();
+		safeLogImages('Showing gyro permission button for iOS device');
+	}
+	
+	safeLogImages('PC image simulation started');
+}
+
+function requestGyroManually() {
+	if (gyroManagerImages) {
+		gyroManagerImages.requestGyroManually();
+	}
 }
 
 function SetImageValues(x, y, threshold, voltage, temp, isInitial = false) {

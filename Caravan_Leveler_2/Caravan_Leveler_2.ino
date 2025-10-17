@@ -1,4 +1,4 @@
-#define DEBUG false
+#define DEBUG false //Uses my personal WiFi Credentials
 //Gyro Adafruit MPU6050
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>

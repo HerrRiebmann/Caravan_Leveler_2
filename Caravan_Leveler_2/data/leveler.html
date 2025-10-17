@@ -8,12 +8,14 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script src="main.js"></script>
+    <script src="gyro_utils.js"></script>
     <script src="level.js"></script>
 </head>
 <body OnLoad="window.setInterval(GetLevel, 300)">
     <div class="card" id="card">
         <h1 id="CustomName">Leveler &#9878;&#65039;</h1>
         <button class="view-toggle" onclick="ToggleLevelMode()" aria-label="Switch to image leveler" title="Image Leveler">🖼️</button>
+        <button id="gyroPermissionBtn" class="gyro-permission-btn" onclick="requestGyroManually()" style="display:none;" title="Enable Gyroscope">📱</button>
         <div id="noScriptWarning"><h2 style="color:red;">JavaScript is disabled!!!</h2></div>
         <div class="level-container">
             <div>
