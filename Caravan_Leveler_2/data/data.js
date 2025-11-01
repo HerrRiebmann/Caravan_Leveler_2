@@ -13,11 +13,15 @@ let mobileGyroIntervalData = null;
 let lastDeviceOrientationData = { alpha: 0, beta: 0, gamma: 0 };
 let lastDeviceMotionData = { x: 0, y: 0, z: 0 };
 
+//Console debug output
+let consoleOutputEnabled = false;
+
 // Safe console logging for browser compatibility
 function safeLogData() {
     if (typeof console !== 'undefined' && console.log) {
         try {
-            console.log.apply(console, arguments);
+            if(consoleOutputEnabled)
+                console.log.apply(console, arguments);
         } catch (e) {
             // Ignore console errors in Edge
         }
