@@ -5,9 +5,12 @@ void SerialBegin() {
 }
 
 void MPU6050Begin() {
-  accelInitialized = mpu.begin();
+  //accelInitialized = mpu.begin();
+  Wire.begin(MPU_SDA, MPU_SCL);
+  accelInitialized = mpu.begin(MPU_Adress, &Wire, 0);
   if (!accelInitialized) {
     logPrintLn("Ooops, no MPU6050 detected ... Check your wiring!");
+    TestI2C();
     return;
   }
 
@@ -73,6 +76,42 @@ void MPU6050Begin() {
   }
 }
 
+void TestI2C() {
+  Wire.begin(MPU_SDA, MPU_SCL);
+
+  byte error, address;
+  int nDevices;
+  logPrintLn("Scanning...");
+  nDevices = 0;
+  for(address = 1; address < 127; address++ ) {
+    Wire.beginTransmission(address);
+    error = Wire.endTransmission();
+    if (error == 0) {
+      logPrint("I2C device found at address 0x");
+      if (address<16) {
+        logPrint("0");
+      }
+      logPrintLn(String(address,HEX));
+      logPrintLn("Int: " + String(address));
+      nDevices++;
+    }
+    else if (error==4) {
+      logPrint("Unknow error at address 0x");
+      if (address<16) {
+        logPrint("0");
+      }
+      logPrintLn(String(address,HEX));
+    }    
+  }
+  if (nDevices == 0) {
+    logPrintLn("No I2C devices found\n");
+  }
+  else {
+    logPrintLn("done\n");
+  }
+  Wire.end();
+}
+
 void SpiffsBegin() {
   if (!SPIFFS.begin(true))
     logPrintLn("An Error has occurred while mounting SPIFFS");
@@ -109,6 +148,7 @@ void ProcessSetupArguments() {
   // /setup?x=123&y=321&inv=0&ap=1&t=10
 
   bool voltageChanged = false;
+  bool mpu6050Changed = false;
 
   for (uint8_t i = 0; i < webServer.args(); i++) {    
     logPrintLn(String(F(" ")) + webServer.argName(i) + F(": ") + webServer.arg(i));
@@ -151,10 +191,27 @@ void ProcessSetupArguments() {
       resistor2 = webServer.arg(i).toFloat();
       voltageChanged = true;
     }
+
+    if (webServer.argName(i).compareTo(F("sda")) == 0) {
+      MPU_SDA = webServer.arg(i).toInt();
+      mpu6050Changed = true;
+    }
+    if (webServer.argName(i).compareTo(F("scl")) == 0) {
+      MPU_SCL = webServer.arg(i).toInt();
+      mpu6050Changed = true;
+    }
+    if (webServer.argName(i).compareTo(F("add")) == 0) {
+      MPU_Adress = webServer.arg(i).toInt();
+      mpu6050Changed = true;
+    }
   }
 
   if (voltageChanged)
     StoreVoltageSettings();
+  if(mpu6050Changed) {
+    StoreI2CSetup();
+    MPU6050Begin();
+  }
 }
 
 String toStringIp(IPAddress ip) {  

@@ -10,6 +10,7 @@ void LoadData() {
   LoadWiFi();
   LoadSerial();
   LoadVoltageSettings();
+  LoadI2CSetup();
 
   settings.end();
 }
@@ -69,6 +70,20 @@ void LoadVoltageSettings() {
   logPrint(String(F("R2: ")));
   logPrintLn(String(resistor2));
 }
+
+void LoadI2CSetup() {
+  MPU_SDA = settings.getInt("MPU_SDA", SDA);
+  MPU_SCL = settings.getInt("MPU_SCL", SCL);
+  MPU_Adress = settings.getInt("MPU_Adress", 0x68);
+
+  logPrint("SDA: ");
+  logPrint(String(MPU_SDA));
+  logPrint(" SCL: ");
+  logPrint(String(MPU_SCL));
+  logPrint(" Adress: ");
+  logPrintLn(String(MPU_Adress, HEX));
+}
+
 void StoreLevel() {
   settings.begin("settings", false);
   settings.putFloat("calibrationX", calibrationX);
@@ -108,5 +123,11 @@ void StoreVoltageSettings() {
   settings.putInt("voltagePin", voltagePin);
   settings.putInt("resistor1", resistor1);
   settings.putInt("resistor2", resistor2);
+  settings.end();
+}
+void StoreI2CSetup() {
+  settings.putInt("MPU_SDA", MPU_SDA);
+  settings.putInt("MPU_SCL", MPU_SCL);
+  settings.putInt("MPU_Adress", MPU_Adress);
   settings.end();
 }

@@ -33,6 +33,10 @@
                     <h3>WiFi</h3>
                     <p data-tooltip="Use Accesspoint, otherwise connect to an existing WiFi.">Use Accesspoint: <input type="checkbox" value="0" id="Accesspoint"></p>
                     <p data-tooltip="Password for the Accesspoint access">Accesspoint PW: <input type="text" id="AccesspointPW"></p>
+                    <h3>MPU6050</h3>
+                    <p data-tooltip="Analog pin number for I2C SDA (0-36)">SDA Pin: <input type="number" value="0" min="0" max="36" id="SDAPin"></p>
+                    <p data-tooltip="Analog pin number for I2C SCL (0-36)">SCL Pin: <input type="number" value="0" min="0" max="36" id="SCLPin"></p>
+                    <p data-tooltip="I2C Adress (0-128)">I²C Adress: <input type="number" value="0" min="0" max="128" id="I2CAdress"></p>
                 </div>
                 <button onClick="SetSetup()" id="SaveBtn">Save</button><br>
                 <button onClick="Calibrate()" id="Calibrate" data-tooltip="Set the current level to Zero.">Calibrate</button><br>

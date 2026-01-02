@@ -16,6 +16,7 @@ void WiFiBegin() {
   webServer.on("/log", handle_log);
   webServer.on("/upload", HTTP_POST, handle_upload_finish, handle_upload);
   webServer.on("/logger.js", handle_emptyfile);
+  webServer.on("/scan", handle_scan);
 
   //Allways redirect to captive portal. Request comes with IP (8.8.8.8) or URL (connectivitycheck.XXX / captive.apple / etc.)
   webServer.on("/generate_204", redirect);  //Android captive portal.
@@ -161,6 +162,12 @@ void handle_setup() {
   txt.concat(String(resistor2));
   txt.concat("|");
   txt.concat(String(devicePassword));
+  txt.concat("|");
+  txt.concat(String(MPU_SDA));
+  txt.concat("|");
+  txt.concat(String(MPU_SCL));
+  txt.concat("|");
+  txt.concat(String(MPU_Adress));
   webServer.send(200, "text/plain", txt);
 }
 void handle_calibrate() {  
@@ -236,6 +243,13 @@ void handle_voltage() {
 void handle_log() {
   webServer.send(200, "text/plain", logBuffer);
   logBuffer = "";
+}
+
+void handle_scan() {
+  logBuffer = "";
+  TestI2C();
+  webServer.send(200, "text/plain", logBuffer);
+  MPU6050Begin();
 }
 
 void handle_wifi() {

@@ -61,6 +61,10 @@ function GetLevelImage() {
                     window.AppState.ADXL345_Initialized = true;
                     SetOutput("", false);
                 }
+            } else if (req.status === 404 || req.status === 0) {
+                // 404 or network error - switch to PC mode
+                safeLogImages('Server endpoint not found (404), switching to PC mode');
+                handleImageRequestError();
             } else {
                 window.AppState.ADXL345_Initialized = false;
                 SetImageValues(0, 0, currentThreshold, 'XX.X', 'XX.X');

@@ -66,13 +66,18 @@ function GetVoltageData() {
     var sURL = '/voltage';
     oRequest.open("GET", sURL, true);
     oRequest.onload = function (e) {
-        if (oRequest.readyState === 4 && oRequest.status === 200) {
-            var arr = oRequest.responseText.split("|");
-            DisplayVoltageData(arr);
-        }
-        else {
-            SetOutput(oRequest.responseText, true);
-            window.AppState.voltageInitialized = false;
+        if (oRequest.readyState === 4) {
+            if (oRequest.status === 200) {
+                var arr = oRequest.responseText.split("|");
+                DisplayVoltageData(arr);
+            } else if (oRequest.status === 404 || oRequest.status === 0) {
+                // 404 or network error - switch to PC mode
+                window.AppState.PCVersion = true;
+                SetOutput("PC Demo mode!", false);
+            } else {
+                SetOutput(oRequest.responseText, true);
+                window.AppState.voltageInitialized = false;
+            }
         }
     };
     oRequest.onerror = function (e) {

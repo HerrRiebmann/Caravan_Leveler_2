@@ -71,6 +71,9 @@ uint8_t voltagePin = 2;
 #else
 #error Target CONFIG_IDF_TARGET is not supported
 #endif
+uint8_t MPU_SDA = SDA;
+uint8_t MPU_SCL = SCL;
+uint8_t MPU_Adress = MPU6050_I2CADDR_DEFAULT;//0x68;
 
 void logPrintLn(const String &msg);
 void logPrint(const String &msg, bool linebreak = false);

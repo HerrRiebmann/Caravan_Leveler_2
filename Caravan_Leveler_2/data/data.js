@@ -284,14 +284,19 @@ function GetRawData() {
     
     oRequest.open("GET", sURL, true);
     oRequest.onload = function (e) {
-        if (oRequest.readyState === 4 && oRequest.status === 200) {
-            //SetOutput(oRequest.responseText, false);
-            var arr = oRequest.responseText.split("|");
-            DisplayRawData(arr);
-        }
-        else {
-            SetOutput(oRequest.responseText, true);
-            window.AppState.ADXL345_Initialized = false;
+        if (oRequest.readyState === 4) {
+            if (oRequest.status === 200) {
+                //SetOutput(oRequest.responseText, false);
+                var arr = oRequest.responseText.split("|");
+                DisplayRawData(arr);
+            } else if (oRequest.status === 404 || oRequest.status === 0) {
+                // 404 or network error - switch to PC mode
+                safeLogData('Server endpoint not found (404), switching to PC mode');
+                handleDataRequestError();
+            } else {
+                SetOutput(oRequest.responseText, true);
+                window.AppState.ADXL345_Initialized = false;
+            }
         }
     };
     

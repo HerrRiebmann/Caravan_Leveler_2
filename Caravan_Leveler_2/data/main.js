@@ -90,11 +90,20 @@ function GetInfo() {
     ClearCanvas();
     oRequest.open("GET", sURL, true);
     oRequest.onload = function (e) {
-        if (oRequest.readyState === 4 && oRequest.status === 200) {            
-            const arr = oRequest.responseText.split("|");
-            AddControlsToCanvas(arr);
-            document.getElementById("SaveBtn").style.backgroundColor = colorSuccess;
-            ResetControlsDelayed();
+        if (oRequest.readyState === 4) {
+            if (oRequest.status === 200) {            
+                const arr = oRequest.responseText.split("|");
+                AddControlsToCanvas(arr);
+                document.getElementById("SaveBtn").style.backgroundColor = colorSuccess;
+                ResetControlsDelayed();
+            } else if (oRequest.status === 404 || oRequest.status === 0) {
+                // 404 or network error - show demo data
+                SetOutput("Server not available - demo mode", true);        
+                document.getElementById("SaveBtn").style.backgroundColor = colorError;
+                setTimeout(FakeSomeData, 2000);
+            } else {
+                SetOutput(oRequest.responseText, true);
+            }
         }
     };
     oRequest.onerror = function (e) {

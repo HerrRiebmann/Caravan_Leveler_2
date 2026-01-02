@@ -196,6 +196,10 @@ function GetLevel() {
 					window.AppState.ADXL345_Initialized = true;
 					SetOutput("", false);
 				}
+			} else if (oRequest.status === 404 || oRequest.status === 0) {
+				// 404 or network error - switch to PC mode
+				safeLog('Server endpoint not found (404), switching to PC mode');
+				handleRequestError();
 			} else {
 				window.AppState.ADXL345_Initialized = false;
 				SetValue(0, 0, 10, 'XX.X', 'XX.X');				
