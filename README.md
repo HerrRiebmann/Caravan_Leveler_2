@@ -76,6 +76,15 @@ Advanced Settings:
 
  * **Accesspoint PW** Password to secure the Accesspoint access
 
+#### MPU6050
+
+ * **SDA Pin** I²C Serial Data GPIO
+
+ * **SCL Pin** I²C Serial Clock Line GPIO
+   
+ * **I²C Adress** Integer representation for the I2C adress (104 or 105)
+
+
 ### Gimmicks
 
 ![Gyro Chart](/Images/GyroChart.png)
@@ -108,11 +117,13 @@ Wiring for my tested ESP32 types. Check the I2C pinout for your board!
 
  MPU6050 | ESP 32 | ESP32-S3 | ESP32-C3
  -------- |-------|-------|-------
- SCL | G22 | G09 | G07
+ SCL | G22 | G09 | G09
  SDA | G21 | G08 | G08
  VCC | 3.3V | 3.3V | 3.3V
  GND | GND | GND | GND
 
+
+The I²C adress will be 0x68 (Integer 104). In some cases, this might be 0x69 (105) when the jumper is set onto the board.
  
 
 ESP 32 | LM2596
