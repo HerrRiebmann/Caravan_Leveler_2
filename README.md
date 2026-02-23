@@ -101,7 +101,7 @@ Or you can use the ESP32 Web firmware flash-method, which will install all the r
 
 Currently supported Versions are ESP32, ESP32-S3 & ESP32-C3.
 
-[Caravan Leveler - Web Installer](https://trib.free.nf/flash.html)
+[Caravan Leveler - Web Installer](https://trib.free.nf/flash.html?source=github)
 
 This makes use of the [ESP Web Tools](https://esphome.github.io/esp-web-tools/) from ESPhome, hosted on unpkg.com.
 
@@ -180,7 +180,7 @@ Tested on Firefox, Chrome & Edge for Windows, iOS and Chrome & Firefox for Andro
 
 ## Demo
 The website, which will be hosted on the ESP32 can be tested here:
-[Caravan Leveler 2.0 - Demo](https://trib.free.nf/CaravanLevelerDemo/index.html)
+[Caravan Leveler 2.0 - Demo](https://trib.free.nf/CaravanLevelerDemo/index.html?source=github)
 
 ## Video
 ![Main Menu](/Images/CaravanLeveler.gif)
