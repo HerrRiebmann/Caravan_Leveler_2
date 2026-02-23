@@ -39,7 +39,7 @@ void LoadInvertation() {
 
 void LoadAP() {
   useAcessPointMode = settings.getBool("useAPMode", useAcessPointMode);
-  
+  devicePassword = settings.getString("devicePassword", devicePassword);
   logPrint(String(F("Loaded AccessPoint: ")));
   logPrintLn(useAcessPointMode ? "True" : "False");
 }
@@ -104,6 +104,7 @@ void StoreInvertation() {
 void StoreAP() {
   settings.begin("settings", false);
   settings.putBool("useAPMode", useAcessPointMode);
+  settings.putString("devicePassword", devicePassword);
   settings.end();
 }
 void StoreWiFi(){
@@ -126,6 +127,7 @@ void StoreVoltageSettings() {
   settings.end();
 }
 void StoreI2CSetup() {
+  settings.begin("settings", false);
   settings.putInt("MPU_SDA", MPU_SDA);
   settings.putInt("MPU_SCL", MPU_SCL);
   settings.putInt("MPU_Adress", MPU_Adress);

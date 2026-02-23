@@ -72,7 +72,7 @@ void CreateAccessPoint() {
   IPAddress subnet(255, 255, 255, 0);
 
   WiFi.mode(WIFI_AP);
-  if (strlen(devicePassword) > 1)
+  if (devicePassword.length() > 1)
     WiFi.softAP(deviceName, devicePassword);
   else
     WiFi.softAP(deviceName);
@@ -82,7 +82,7 @@ void CreateAccessPoint() {
   if (Serial_Enabled) {
     logPrint(String(F("AP IP address: ")));
     logPrintLn(String(WiFi.softAPIP().toString()));
-    if (strlen(devicePassword) > 1) {
+    if (devicePassword.length() > 1) {
       logPrint("AP Password: ");
       logPrintLn(devicePassword);
     }
@@ -275,7 +275,7 @@ void handle_upload() {
   if (upload.status == UPLOAD_FILE_START) {
     String filename = upload.filename;
     if (filename.endsWith(".bin")) {
-      if (filename.indexOf("spiffs") >= 0)
+      if (filename.indexOf("spiffs") >= 0 || filename.indexOf("littlefs") >= 0)
         UploadIsSPIFFS = true;
       else
         UploadIsOTA = true;

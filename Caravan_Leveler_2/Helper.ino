@@ -113,8 +113,16 @@ void TestI2C() {
 }
 
 void SpiffsBegin() {
+#if USE_LITTLE_FS
+  logPrint("LittleFS");
+#else
+  logPrint("SPIFFS");
+#endif
+  logPrint(" Update Target: ");
+  logPrintLn(String(FS_PartitionStart));
+
   if (!SPIFFS.begin(true))
-    logPrintLn("An Error has occurred while mounting SPIFFS");
+    logPrintLn("An Error has occurred while mounting the filesystem");
 }
 
 boolean isIp(String str) {
@@ -160,6 +168,10 @@ void ProcessSetupArguments() {
 
     if (webServer.argName(i).compareTo(F("ap")) == 0) {
       useAcessPointMode = webServer.arg(i) == "1";
+      StoreAP();
+    }
+    if (webServer.argName(i).compareTo(F("apw")) == 0) {
+      devicePassword = webServer.arg(i);
       StoreAP();
     }
 
@@ -210,6 +222,7 @@ void ProcessSetupArguments() {
     StoreVoltageSettings();
   if(mpu6050Changed) {
     StoreI2CSetup();
+    Wire.end();
     MPU6050Begin();
   }
 }

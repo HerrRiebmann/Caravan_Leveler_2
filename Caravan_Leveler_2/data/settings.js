@@ -40,6 +40,8 @@ function SetSetup(submitData = true) {
         sURL += document.getElementById("InvertAxis").value;
         sURL += '&ap=';
         sURL += document.getElementById("Accesspoint").checked ? '1' : '0';
+        sURL += '&apw=';
+        sURL += document.getElementById("AccesspointPW").value;
         sURL += '&t=';
         sURL += document.getElementById("ThresholdSlider").value;
         sURL += '&s=';

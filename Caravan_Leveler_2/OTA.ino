@@ -1,6 +1,6 @@
 void setupOTA() {
   ArduinoOTA.setHostname(deviceName);
-  ArduinoOTA.setPassword(devicePassword);
+  ArduinoOTA.setPassword(devicePassword.c_str());
   //Default Port
   //ArduinoOTA.setPort(1337);
 
@@ -73,10 +73,9 @@ void OTA_Handle() {
 }
 
 void handle_update_Spiffs(HTTPUpload& upload) {  
-  
   if (upload.status == UPLOAD_FILE_START) {
     Serial.println("SPIFFSUpdate: " + String(upload.filename.c_str()));
-    if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_SPIFFS)) {  //start with max available size
+    if (!Update.begin(UPDATE_SIZE_UNKNOWN, FS_PartitionStart)) {  //start with max available size
       Update.printError(Serial);
     }
   } else if (upload.status == UPLOAD_FILE_WRITE) {

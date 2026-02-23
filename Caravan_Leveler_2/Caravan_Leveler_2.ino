@@ -5,8 +5,20 @@
 #include <Wire.h>
 Adafruit_MPU6050 mpu;
 
+//Over the Air Update
+#include <ArduinoOTA.h>
+
 //Filesystem
-#include "SPIFFS.h"
+#define USE_LITTLE_FS false
+
+#if USE_LITTLE_FS
+  #include "LittleFS.h"
+  #define SPIFFS LittleFS
+  const int FS_PartitionStart = U_LITTLEFS;  
+#else
+  #include "SPIFFS.h"
+  const int FS_PartitionStart = U_SPIFFS;
+#endif
 
 //Webserver
 #include <WiFi.h>
@@ -33,11 +45,8 @@ ImprovWiFi improvSerial(&Serial);
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
 
-//Over the Air Update
-#include <ArduinoOTA.h>
-
 const char deviceName[] = "Caravan Leveler";
-const char devicePassword[] = "SportAndFun";
+String devicePassword = "SportAndFun";
 
 bool accelInitialized = false;
 float calibrationX = -0.0;
@@ -83,11 +92,11 @@ void setup() {
 
   setupImprov();
 
-  MPU6050Begin();
-
-  SpiffsBegin();
+  SpiffsBegin();  
 
   LoadData();
+
+  MPU6050Begin();
 
   WiFiBegin();
 
