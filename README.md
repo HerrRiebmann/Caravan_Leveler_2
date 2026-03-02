@@ -8,6 +8,9 @@ The successor of the [Caravan Leveler 1.0](https://github.com/HerrRiebmann/Carav
 An ESP32 will create a hotspot with a captive portal.
 This captive portal will force the phone to open up a, usually for login intended, website (_which represents the water level_).
 
+[![Version](https://img.shields.io/badge/version-v2026.2.26-blue.svg)](https://trib.free.nf/docs/de/flash.html)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen.svg)](https://trib.free.nf/CaravanLevelerDemo/index.html?source=github)
+
 ## Contents
 * [Usage](#usage)
 * [Things](#Things)
