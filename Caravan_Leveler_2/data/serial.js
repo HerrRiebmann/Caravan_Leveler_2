@@ -34,7 +34,7 @@ function restoreSessionData() {
         if (savedAutoScroll !== null) {
             autoScroll = savedAutoScroll === 'true';
             const btn = document.getElementById('autoScrollBtn');
-            btn.textContent = `Auto Scroll: ${autoScroll ? 'ON' : 'OFF'}`;
+            btn.textContent = i18n.t(autoScroll ? 'serial.scroll.on' : 'serial.scroll.off');
             btn.style.backgroundColor = autoScroll ? COLORS.BRAND_BLUE : COLORS.ERROR_RED;
         }
         
@@ -97,7 +97,7 @@ function AppendToLog(newData) {
 function toggleAutoScroll() {
     autoScroll = !autoScroll;
     const btn = document.getElementById('autoScrollBtn');
-    btn.textContent = `Auto Scroll: ${autoScroll ? 'ON' : 'OFF'}`;
+    btn.textContent = i18n.t(autoScroll ? 'serial.scroll.on' : 'serial.scroll.off');
     btn.style.backgroundColor = autoScroll ? COLORS.BRAND_BLUE : COLORS.ERROR_RED;
     
     // Save to session storage
@@ -127,7 +127,7 @@ function clearLog() {
 function toggleUpdates() {
     updatesEnabled = !updatesEnabled;
     const btn = document.getElementById('toggleBtn');
-    btn.textContent = updatesEnabled ? 'Pause Updates' : 'Resume Updates';
+    btn.textContent = i18n.t(updatesEnabled ? 'serial.pause' : 'serial.resume');
     btn.style.backgroundColor = updatesEnabled ? COLORS.BRAND_BLUE : COLORS.ERROR_RED;
     SetOutput(`Updates ${updatesEnabled ? 'resumed' : 'paused'}`, false);
 }

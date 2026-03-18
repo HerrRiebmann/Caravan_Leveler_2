@@ -73,6 +73,7 @@ div.settings input { font-size:medium; }
 
 /* Modal / dimmer */
 .modal { display:block; }
+.modal-content { max-width:480px; margin:0 auto; padding:0 8px; box-sizing:border-box; }
 .dimmer { background:#000; opacity:.6; position:fixed; inset:0; display:none; z-index:100; }
 
 /* Utilities */
@@ -186,6 +187,46 @@ table thead th:first-child { border-left:none; }
 .log-container textarea { width:100%; max-width:100%; min-height:400px; resize:vertical; font-family:'Courier New',Consolas,monospace; font-size:12px; background:#1e1e1e; color:#00ff00; border:2px solid var(--brand); border-radius:4px; padding:10px; box-sizing:border-box; }
 .log-container textarea:focus { outline:none; border-color:#BA2E00; box-shadow:0 0 5px rgba(186,46,0,0.5); }
 #log { white-space:pre-wrap; font-family:monospace; background:#1e1e1e; color:#00ff00; border:1px solid var(--brand); }
+
+/* ---- Language Switcher ---- */
+.lang-switcher { display:flex; gap:6px; margin-top:8px; }
+.lang-btn { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.3); border-radius:4px; color:#fff; padding:5px 10px; font-size:13px; cursor:pointer; width:auto; min-width:0; box-shadow:none; margin:0; transition:background .2s, border-color .2s; }
+.lang-btn:hover { background:rgba(255,255,255,0.22); }
+.lang-btn.lang-btn-active { background:var(--brand); border-color:var(--brand); font-weight:bold; }
+
+/* ---- Settings Tabs ---- */
+.settings-tabs { display:flex; gap:4px; margin:0 0 12px 0; justify-content:center; }
+.tab-btn { background:rgba(255,255,255,0.12); border:1px solid rgba(0,140,186,0.35); border-radius:20px; color:rgba(255,255,255,0.82); padding:7px 10px; font-size:13px; cursor:pointer; transition:background .2s, color .2s, border-color .2s, box-shadow .2s; flex:1; white-space:nowrap; box-shadow:none; width:auto; margin:0; display:block; }
+.tab-btn:hover { background:rgba(0,140,186,0.28); color:#fff; }
+.tab-btn.active { background:var(--brand); border-color:var(--brand); color:#fff; font-weight:bold; box-shadow:0 2px 8px rgba(0,140,186,0.45); }
+@media (max-width: 768px) { .tab-btn { width:auto; max-width:none; padding:7px 6px; font-size:12px; } }
+.tab-content { display:none; }
+.tab-content.active { display:block; animation:tabFadeIn .2s ease; }
+@keyframes tabFadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+
+/* ---- Settings Rows ---- */
+.settings-row { display:flex; align-items:center; justify-content:space-between; padding:12px 8px; border-bottom:1px solid rgba(255,255,255,0.1); }
+.settings-row:last-child { border-bottom:none; }
+.settings-row > label:first-child { color:#fff; font-size:0.95em; text-align:left; flex:1; margin:0; }
+.settings-row input[type=number] { width:80px; padding:6px 8px; border:1px solid rgba(0,140,186,0.6); border-radius:6px; background:rgba(255,255,255,0.95); color:#333; font-size:15px; text-align:center; flex-shrink:0; }
+.settings-row input[type=text] { width:130px; padding:6px 8px; border:1px solid rgba(0,140,186,0.6); border-radius:6px; background:rgba(255,255,255,0.95); color:#333; font-size:14px; text-align:center; flex-shrink:0; }
+.settings-slider { width:90%; margin:4px auto 12px; display:block; }
+.settings-center { text-align:center; padding:14px 0 6px; }
+.settings-hint { color:rgba(255,255,255,0.55); font-size:0.78em; margin-top:4px; }
+.settings-section-label { color:var(--brand); font-size:0.85em; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; font-weight:bold; display:block; }
+.settings-section-head { color:var(--brand); margin:8px 0 12px; font-size:1.05em; text-align:center; }
+.settings-actions { margin-top:16px; display:flex; flex-direction:column; align-items:center; gap:8px; padding-bottom:10px; }
+
+/* ---- Toggle Switch ---- */
+.toggle-switch { position:relative; display:inline-block; width:50px; height:27px; flex-shrink:0; }
+.toggle-switch input { opacity:0; width:0; height:0; position:absolute; }
+.toggle-slider { position:absolute; cursor:pointer; inset:0; background:rgba(100,100,100,0.75); border-radius:27px; transition:background .25s; }
+.toggle-slider:before { content:""; position:absolute; height:21px; width:21px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:transform .25s; box-shadow:0 1px 4px rgba(0,0,0,0.35); }
+.toggle-switch input:checked + .toggle-slider { background:var(--brand); }
+.toggle-switch input:checked + .toggle-slider:before { transform:translateX(23px); }
+
+/* ---- MPU6050 image ---- */
+.mpu6050-image { width:80px; height:auto; cursor:pointer; transition:transform .35s ease; margin:6px auto; display:block; }
 
 /* Rotated image leveler */
 .rotation-container { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:2.2rem; margin-top:3rem; position:relative; }

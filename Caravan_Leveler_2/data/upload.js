@@ -14,13 +14,19 @@ function Upload() {
 
 function checkServerConnectivity() {
     const testRequest = new XMLHttpRequest();
-    testRequest.open("GET", "/update", true);
+    testRequest.open("GET", "/level", true);  // /level has a real GET handler on the ESP32
     testRequest.timeout = 1000; // 1 second timeout
     
     testRequest.onload = function() {
-        if (testRequest.readyState === 4) {
-            // Server responded, proceed with real upload
+        if (testRequest.readyState === 4 && testRequest.status === 200) {
+            // Server responded with 200 – real ESP32, proceed with upload
             document.getElementById("UploadForm").submit();
+        } else {
+            // Server reachable but no valid ESP32 endpoint (e.g. PC dev server) → PC mode
+            if (window.AppState) {
+                window.AppState.PCVersion = true;
+            }
+            mockUpload();
         }
     };
     

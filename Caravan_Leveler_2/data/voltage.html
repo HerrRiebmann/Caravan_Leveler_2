@@ -8,28 +8,29 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script src="main.js"></script>
+    <script src="i18n.js"></script>
     <script src="voltage.js"></script>
     <script src="chart.js"></script>
 </head>
 <body>
     <div class="card" id="card">
-        <h1>Voltage Monitor &#x26A1;</h1>
+        <h1 data-i18n="page.volt">Voltage Monitor &#x26A1;</h1>
         <div id="noScriptWarning"><h2 style="color:red;">JavaScript is disabled!!!</h2></div>
         <div id="chart-container">
             <canvas id="voltageChart"></canvas>
         </div>
          <div>
-            <button onclick="setMode('main')" id="main">Main Voltage</button>
-            <button onclick="setMode('secondary')" id="secondary">Secondary Voltage</button>
-            <button onclick="setMode('raw')" id="raw">Raw Input</button>
+            <button onclick="setMode('main')" id="main" data-i18n="volt.main">Main Voltage</button>
+            <button onclick="setMode('secondary')" id="secondary" data-i18n="volt.secondary">Secondary Voltage</button>
+            <button onclick="setMode('raw')" id="raw" data-i18n="volt.raw">Raw Input</button>
         </div>
         <table>
             <thead>
                 <tr>
-                    <th>Channel</th>
-                    <th>Current</th>
-                    <th>Min</th>
-                    <th>Max</th>
+                    <th data-i18n="volt.channel">Channel</th>
+                    <th data-i18n="volt.current">Current</th>
+                    <th data-i18n="volt.min">Min</th>
+                    <th data-i18n="volt.max">Max</th>
                 </tr>
             </thead>
             <tbody id="voltageTable"></tbody>

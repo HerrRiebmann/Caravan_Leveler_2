@@ -10,6 +10,7 @@
    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
    <link rel="icon" href="favicon.ico" type="image/x-icon">
    <script src="main.js"></script>
+   <script src="i18n.js"></script>
    <script src="upload.js"></script>
    <script src="../logger.js"></script>
 </head>
@@ -21,20 +22,22 @@
          <span class="line"></span>
       </div>
       <div id="myLinks">
-         <button onclick="NavigateMenu('auto_level.html')">Level</button><br>
-         <button onclick="NavigateMenu('settings.html')">Settings</button><br>
-         <button onclick="NavigateMenu('info.html')">ESP32 Info</button><br>
-         <button onclick="NavigateMenu('data.html')">Gyroscope</button><br>
-         <button onclick="NavigateMenu('voltage.html')">Voltage</button><br>
-         <button onclick="NavigateMenu('serial.html')">Serial</button><br>
+         <button onclick="NavigateMenu('auto_level.html')" data-i18n="nav.level">Level</button><br>
+         <button onclick="NavigateMenu('settings.html')" data-i18n="nav.settings">Settings</button><br>
+         <button onclick="NavigateMenu('info.html')" data-i18n="nav.info">ESP32 Info</button><br>
+         <button onclick="NavigateMenu('data.html')" data-i18n="nav.gyro">Gyroscope</button><br>
+         <button onclick="NavigateMenu('voltage.html')" data-i18n="nav.voltage">Voltage</button><br>
+         <button onclick="NavigateMenu('serial.html')" data-i18n="nav.serial">Serial</button><br>
          <br>
-         <div class="modal-content">
-            <form action="upload" method="post" enctype="multipart/form-data" id="UploadForm">
+         <form action="upload" method="post" enctype="multipart/form-data" id="UploadForm">
                <div class="upload-btn-wrapper">
-                  <button type="submit">Upload</button>
+                  <button type="submit" data-i18n="nav.upload">Upload</button>
                   <label for="uploadFile"></label><input type="file" name="myfile" id="uploadFile" onchange="Upload()">
                </div>
             </form>
+         <div class="lang-switcher">
+            <button id="lang-btn-en" class="lang-btn" onclick="i18n.setLang('en'); var f=document.getElementById('subframe'); if(f) f.src=f.src;">🇬🇧 EN</button>
+            <button id="lang-btn-de" class="lang-btn" onclick="i18n.setLang('de'); var f=document.getElementById('subframe'); if(f) f.src=f.src;">🇩🇪 DE</button>
          </div>
       </div>
    </div>

@@ -8,48 +8,109 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script src="main.js"></script>
+    <script src="i18n.js"></script>
     <script src="settings.js"></script>
 </head>
-<body>    
+<body>
     <div class="card" id="card">
-        <h1>Settings &#128295;</h1>
+        <h1 data-i18n="page.settings">Settings &#128295;</h1>
         <div id="noScriptWarning"><h2 style="color:red;">JavaScript is disabled!!!</h2></div>
         <span id="ThresholdValue" style="display:none"></span>
         <div id="SetupContainer" class="modal">
             <div class="modal-content">
-                Indicating Range:<br>
-                <span id="SliderValue" class="brand-color"></span>&#176;<br>
-                <input type="range" min="1" max="45" value="0" class="slider" id="ThresholdSlider">
-                <p>Invert Axis: <input type="number" value="0" min="0" max="3" id="InvertAxis" style="display:none"></p>
-                <img src="mpu6050sml.png" id="mpu6050Image" class="mpu6050-image" onclick="rotateInvertAxis()"
-                    alt="MPU6050">                
-                <p data-tooltip="Enables the Micro-USB Serial Output with debugging information">Serial Output: <input type="checkbox" value="0" id="SerialOutput"></p>
-                <div id="AdvancedSettings">
-                    <h3>Advanced Voltage Settings</h3>
-                    <p data-tooltip="Analog pin number for voltage measurement (0-36)">Voltage Pin: <input type="number" value="0" min="0" max="36" id="VoltagePin"></p>
-                    <p data-tooltip="Voltage threshold to correct differences">Voltage Threshold: <input type="number" value="0" min="0.00" max="50.00" step="0.01" id="VoltageThreshold"></p>
-                    <p data-tooltip="First resistor value in ohms for voltage divider">Resistor 1: <input type="number" value="0" min="0" max="99999" id="Resistor1"></p>
-                    <p data-tooltip="Second resistor value in ohms for voltage divider">Resistor 2: <input type="number" value="0" min="0" max="99999" id="Resistor2"></p>
-                    <h3>WiFi</h3>
-                    <p data-tooltip="Use Accesspoint, otherwise connect to an existing WiFi.">Use Accesspoint: <input type="checkbox" value="0" id="Accesspoint"></p>
-                    <p data-tooltip="Password for the Accesspoint access">Accesspoint PW: <input type="text" id="AccesspointPW"></p>
-                    <h3>MPU6050</h3>
-                    <p data-tooltip="Analog pin number for I2C SDA (0-36)">SDA Pin: <input type="number" value="0" min="0" max="36" id="SDAPin"></p>
-                    <p data-tooltip="Analog pin number for I2C SCL (0-36)">SCL Pin: <input type="number" value="0" min="0" max="36" id="SCLPin"></p>
-                    <p data-tooltip="I2C Adress (0-128)">I²C Adress: <input type="number" value="0" min="0" max="128" id="I2CAdress"></p>
+
+                <!-- Tab Navigation -->
+                <div class="settings-tabs">
+                    <button class="tab-btn active" onclick="switchTab('tab-basic')" data-tab="tab-basic" data-i18n="set.tab.basic">&#9881; Basic</button>
+                    <button class="tab-btn" onclick="switchTab('tab-voltage')" data-tab="tab-voltage" data-i18n="set.tab.voltage">&#9889; Voltage</button>
+                    <button class="tab-btn" onclick="switchTab('tab-wifi')" data-tab="tab-wifi" data-i18n="set.tab.wifi">&#128246; WiFi</button>
+                    <button class="tab-btn" onclick="switchTab('tab-sensor')" data-tab="tab-sensor" data-i18n="set.tab.sensor">&#128279; Sensor</button>
                 </div>
-                <button onClick="SetSetup()" id="SaveBtn">Save</button><br>
-                <button onClick="Calibrate()" id="Calibrate" data-tooltip="Set the current level to Zero.">Calibrate</button><br>
-                <button onClick="Restart()" id="RestartBtn" data-tooltip="Restart the ESP32 device.">Restart</button>
+
+                <!-- Tab: Basic -->
+                <div id="tab-basic" class="tab-content active">
+                    <div class="settings-row">
+                        <label data-i18n="set.range">Indicating Range</label>
+                        <span class="brand-color" id="SliderValue"></span>&#176;
+                    </div>
+                    <input type="range" min="1" max="45" value="0" class="slider settings-slider" id="ThresholdSlider">
+                    <div class="settings-row" data-tooltip="Enables the Micro-USB Serial Output with debugging information" data-i18n-tooltip="tip.serial">
+                        <label data-i18n="set.serial">Serial Output</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" value="0" id="SerialOutput">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-center">
+                        <div class="settings-section-label" data-i18n="set.invert">Invert Axis</div>
+                        <input type="number" value="0" min="0" max="3" id="InvertAxis" style="display:none">
+                        <img src="mpu6050sml.png" id="mpu6050Image" class="mpu6050-image" onclick="rotateInvertAxis()" alt="MPU6050">
+                        <div class="settings-hint" data-i18n="set.tap">Tap to rotate</div>
+                    </div>
+                </div>
+
+                <!-- Tab: Voltage -->
+                <div id="tab-voltage" class="tab-content">
+                    <div class="settings-row" data-tooltip="Analog pin number for voltage measurement (0-36)" data-i18n-tooltip="tip.vpin">
+                        <label data-i18n="set.vpin">Voltage Pin</label>
+                        <input type="number" value="0" min="0" max="36" id="VoltagePin">
+                    </div>
+                    <div class="settings-row" data-tooltip="Voltage threshold to correct differences" data-i18n-tooltip="tip.vthresh">
+                        <label data-i18n="set.vthresh">Voltage Threshold</label>
+                        <input type="number" value="0" min="0.00" max="50.00" step="0.01" id="VoltageThreshold">
+                    </div>
+                    <div class="settings-row" data-tooltip="First resistor value in ohms for voltage divider" data-i18n-tooltip="tip.r1">
+                        <label data-i18n="set.r1">Resistor 1</label>
+                        <input type="number" value="0" min="0" max="99999" id="Resistor1">
+                    </div>
+                    <div class="settings-row" data-tooltip="Second resistor value in ohms for voltage divider" data-i18n-tooltip="tip.r2">
+                        <label data-i18n="set.r2">Resistor 2</label>
+                        <input type="number" value="0" min="0" max="99999" id="Resistor2">
+                    </div>
+                </div>
+
+                <!-- Tab: WiFi -->
+                <div id="tab-wifi" class="tab-content">
+                    <div class="settings-row" data-tooltip="Use Accesspoint, otherwise connect to an existing WiFi." data-i18n-tooltip="tip.ap">
+                        <label data-i18n="set.ap">Use Accesspoint</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" value="0" id="Accesspoint">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row" data-tooltip="Password for the Accesspoint access" data-i18n-tooltip="tip.appw">
+                        <label data-i18n="set.appw">Accesspoint PW</label>
+                        <input type="text" id="AccesspointPW">
+                    </div>
+                </div>
+
+                <!-- Tab: Sensor -->
+                <div id="tab-sensor" class="tab-content">
+                    <h3 class="settings-section-head">MPU6050</h3>
+                    <div class="settings-row" data-tooltip="Analog pin number for I2C SDA (0-36)" data-i18n-tooltip="tip.sda">
+                        <label data-i18n="set.sda">SDA Pin</label>
+                        <input type="number" value="0" min="0" max="36" id="SDAPin">
+                    </div>
+                    <div class="settings-row" data-tooltip="Analog pin number for I2C SCL (0-36)" data-i18n-tooltip="tip.scl">
+                        <label data-i18n="set.scl">SCL Pin</label>
+                        <input type="number" value="0" min="0" max="36" id="SCLPin">
+                    </div>
+                    <div class="settings-row" data-tooltip="I2C Adress (0-128)" data-i18n-tooltip="tip.i2c">
+                        <label data-i18n="set.i2c">I²C Address</label>
+                        <input type="number" value="0" min="0" max="128" id="I2CAdress">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="settings-actions">
+                    <button onclick="SetSetup()" id="SaveBtn" data-i18n="btn.save">Save</button>
+                    <button onclick="Calibrate()" id="Calibrate" data-tooltip="Set the current level to Zero." data-i18n="btn.calibrate" data-i18n-tooltip="tip.calibrate">Calibrate</button>
+                    <button onclick="Restart()" id="RestartBtn" data-tooltip="Restart the ESP32 device." data-i18n="btn.restart" data-i18n-tooltip="tip.restart">Restart</button>
+                </div>
+
             </div>
         </div>
         <span id="Output"></span>
-        <p>
-            <div class="advanced-toggle" data-tooltip="Show advanced voltage calibration settings">
-                <label for="AdvancedMode">Advanced Settings:</label>
-                <input type="checkbox" id="AdvancedMode" onchange="toggleAdvancedSettings()">
-            </div>
-        </p>
     </div>
     <div class="dimmer"></div>
 </body>

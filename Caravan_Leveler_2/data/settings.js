@@ -6,15 +6,11 @@ document.addEventListener("DOMContentLoaded", function () {
     SetSetup(false);
 });
 
-function toggleAdvancedSettings() {
-    const advancedSettings = document.getElementById("AdvancedSettings");
-    const advancedMode = document.getElementById("AdvancedMode");
-    
-    if (advancedMode.checked) {
-        advancedSettings.style.display = "block";
-    } else {
-        advancedSettings.style.display = "none";
-    }
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    document.querySelector('[data-tab="' + tabId + '"]').classList.add('active');
 }
 function SetDefaultSetupValues() {
     document.getElementById("SaveBtn").style.backgroundColor = colorError;
