@@ -8,7 +8,7 @@ The successor of the [Caravan Leveler 1.0](https://github.com/HerrRiebmann/Carav
 An ESP32 will create a hotspot with a captive portal.
 This captive portal will force the phone to open up a, usually for login intended, website (_which represents the water level_).
 
-[![Version](https://img.shields.io/badge/version-v2026.2.26-blue.svg)](https://trib.free.nf/docs/de/flash.html)
+[![Version](https://img.shields.io/badge/version-v2026.2.26-blue.svg)](https://trib.free.nf/docs/de/flash.html?source=github)
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen.svg)](https://trib.free.nf/CaravanLevelerDemo/index.html?source=github)
 
 ## Contents
@@ -39,7 +39,7 @@ In short: Lazy me doesn´t want to constantly walk to the inside and check the l
  * **Upload** loads a file to the SPIFFS filesystem. To overwrite existing files, the filename must be equal (see [/data](https://github.com/HerrRiebmann/Caravan_Leveler_2/tree/main/Caravan_Leveler_2/data))! The filenames are case sensitive!
 
   * Or updates the firmware by uploading a *.bin file.
-  * Or updates the spiffs with a spiffs.*.bin file.
+  * Or updates the spiffs with a spiffs.*.bin file. See [Manual SPIFFS Upload](#Manual-SPIFFS-Upload)
 
 
 ### Settings
@@ -167,6 +167,14 @@ You can find the latest release [here](https://github.com/me-no-dev/arduino-esp3
 For **Arduino IDE 2.X** use the VSIX from [arduino-spiffs-upload](https://github.com/espx-cz/arduino-spiffs-upload) 
 
 _This is only necessary if you want to compile the code yourself and upload the webinterface to the ESP32 afterwards._
+
+#### Manual SPIFFS Upload
+It is possible to use the Upload functionality on the Caravan Leveler to update the Website files all at once.
+It automatically indentifies if this is a SPIFFS package an put it on the right spot on the storage.
+
+The SPIFFS binary can be found here: [spiffs-binary](https://trib.free.nf/spiffs.bin) 
+
+_Be aware, all your image customizations will be overwritten. The Settings will not be affected_
 
 ### Libraries
 * Adafruit_MPU6050.h ([2.2.6](https://github.com/adafruit/Adafruit_MPU6050))
