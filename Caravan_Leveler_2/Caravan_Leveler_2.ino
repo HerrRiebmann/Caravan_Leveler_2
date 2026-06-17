@@ -1,4 +1,9 @@
 #define DEBUG false //Uses my personal WiFi Credentials
+
+//Fri3d Badge 2024 (ESP32-S3-WROOM1)
+//Nologo ESP32C3 Super Mini
+//ESP32 Dev Module
+
 //Gyro Adafruit MPU6050
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
