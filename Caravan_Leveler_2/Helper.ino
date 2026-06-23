@@ -1,7 +1,7 @@
 void SerialBegin() {
   Serial.begin(115200);
-  Serial.println("Start Leveler");
-  Serial.println("");
+  logPrint("Start Leveler ");
+  logPrintLn(ArduinoDateToDisplayDate(__DATE__));
 }
 
 void MPU6050Begin() {
@@ -9,7 +9,7 @@ void MPU6050Begin() {
   Wire.begin(MPU_SDA, MPU_SCL);
   accelInitialized = mpu.begin(MPU_Adress, &Wire, 0);
   if (!accelInitialized) {
-    logPrintLn("Ooops, no MPU6050 detected ... Check your wiring!");
+    logPrintLn("No MPU6050 detected ... Check your wiring!");
     TestI2C();
     return;
   }
@@ -93,6 +93,7 @@ void TestI2C() {
       }
       logPrintLn(String(address,HEX));
       logPrintLn("Int: " + String(address));
+      ReadWhoAmI(address);
       nDevices++;
     }
     else if (error==4) {
@@ -110,6 +111,21 @@ void TestI2C() {
     logPrintLn("done\n");
   }
   Wire.end();
+}
+
+void ReadWhoAmI(byte address) {  
+  Wire.beginTransmission(address);
+  //Register: Who_Am_I
+  Wire.write(0x75);
+  Wire.endTransmission(false);
+  Wire.requestFrom(address, (uint8_t)1);
+  if (Wire.available()) {
+    uint8_t whoAmI = Wire.read();
+    logPrint("WHO_AM_I (0x75) = 0x");
+    logPrintLn(String(whoAmI, HEX));
+  } else {
+    logPrintLn("WHO_AM_I: no response");
+  }
 }
 
 void SpiffsBegin() {

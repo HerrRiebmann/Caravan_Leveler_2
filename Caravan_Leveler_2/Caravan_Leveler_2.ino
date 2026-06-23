@@ -4,11 +4,11 @@
 //Nologo ESP32C3 Super Mini
 //ESP32 Dev Module
 
-//Gyro Adafruit MPU6050
-#include <Adafruit_MPU6050.h>
+//Gyro MPU6050 (custom implementation - accepts compatible device IDs)
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
-Adafruit_MPU6050 mpu;
+#include "MPU6050.h"
+Custom_MPU6050 mpu;
 
 //Over the Air Update
 #include <ArduinoOTA.h>

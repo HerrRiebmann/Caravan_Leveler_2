@@ -18,7 +18,7 @@ void LoadLevel() {
   calibrationX = settings.getFloat("calibrationX", calibrationX);
   calibrationY = settings.getFloat("calibrationY", calibrationY);
 
-  logPrint("Loaded X: ");
+  logPrint("Loaded Calibration X: ");
   logPrint(String(calibrationX));
   logPrint(" Y: ");
   logPrintLn(String(calibrationY));

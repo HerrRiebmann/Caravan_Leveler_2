@@ -256,9 +256,12 @@ void handle_wifi() {
   int n = WiFi.scanNetworks(false, false);  //WiFi.scanNetworks(async, show_hidden)
   String temp;
   for (int i = 0; i < n; i++) {
-    temp += WiFi.SSID(i) + ";";
-    temp += " (" + GetEncryptionType(WiFi.encryptionType(i)) + ")";
-    temp += "|";
+    temp.concat(WiFi.SSID(i));
+    temp.concat(";");
+    temp.concat(" (");
+    temp.concat(GetEncryptionType(WiFi.encryptionType(i)));
+    temp.concat(")");
+    temp.concat("|");
   }
   webServer.send(200, "text/plain", temp);
 }
@@ -302,6 +305,8 @@ const char* const PROGMEM resetReason[] = { "ERR", "Power on", "Unknown", "Softw
                                             "RTC Watch dog", "Instrusion", "Time Group CPU", "Software CPU", "RTC Watch dog CPU", "Extern CPU", "Voltage not stable", "RTC Watch dog RTC" };
 void handle_esp() {
   String temp = "CPU Temp;" + String(temperatureRead()) + "|Runtime;" + runtime(millis()) + "|Build;" + (String)__DATE__ + " " + (String)__TIME__ + "|SketchSize;" + formatBytes(ESP.getSketchSize()) + "|SketchSpace;" + formatBytes(ESP.getFreeSketchSpace()) + "|LocalIP;" + WiFi.localIP().toString() + "|Hostname;" + WiFi.getHostname() + "|SSID;" + WiFi.SSID() + "|RSSI;" + WiFi.RSSI() + "|GatewayIP;" + WiFi.gatewayIP().toString() + "|Channel;" + WiFi.channel() + "|MacAddress;" + WiFi.macAddress() + "|SubnetMask;" + WiFi.subnetMask().toString() + "|BSSID;" + WiFi.BSSIDstr() + "|ClientIP;" + webServer.client().remoteIP().toString() + "|DnsIP;" + WiFi.dnsIP().toString() + "|ChipModel;" + ESP.getChipModel() + "|Reset1;" + resetReason[rtc_get_reset_reason(0)] + "|Reset2;" + resetReason[rtc_get_reset_reason(1)] + "|CpuFreqMHz;" + ESP.getCpuFreqMHz() + "|HeapSize;" + formatBytes(ESP.getHeapSize()) + "|FreeHeap;" + formatBytes(ESP.getFreeHeap()) + "|MinFreeHeap;" + formatBytes(ESP.getMinFreeHeap()) + "|ChipSize;" + formatBytes(ESP.getFlashChipSize()) + "|ChipSpeed;" + ESP.getFlashChipSpeed() / 1000000 + "|ChipMode;" + flashChipMode[ESP.getFlashChipMode()] + "|IdeVersion;" + ARDUINO + "|SdkVersion;" + ESP.getSdkVersion();
+  temp.concat("|Firmware;");
+  temp.concat(ArduinoDateToDisplayDate(__DATE__));
   webServer.send(200, "text/plain", temp);
 }
 void handleNotFound() {
@@ -313,16 +318,20 @@ void handleNotFound() {
   if (captivePortal())
     return;
   String message = F("File Not Found\n\n");
-  message += F("URI: ");
-  message += webServer.uri();
-  message += F("\nMethod: ");
-  message += (webServer.method() == HTTP_GET) ? "GET" : "POST";
-  message += F("\nArguments: ");
-  message += webServer.args();
-  message += F("\n");
+  message.concat(F("URI: "));
+  message.concat(webServer.uri());
+  message.concat(F("\nMethod: "));
+  message.concat((webServer.method() == HTTP_GET) ? "GET" : "POST");
+  message.concat(F("\nArguments: "));
+  message.concat(String(webServer.args()));
+  message.concat(F("\n"));
 
   for (uint8_t i = 0; i < webServer.args(); i++) {
-    message += String(F(" ")) + webServer.argName(i) + F(": ") + webServer.arg(i) + F("\n");
+    message.concat(F(" "));
+    message.concat(webServer.argName(i));
+    message.concat(F(": "));
+    message.concat(webServer.arg(i));
+    message.concat(F("\n"));
   }
   webServer.sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   webServer.sendHeader("Pragma", "no-cache");
