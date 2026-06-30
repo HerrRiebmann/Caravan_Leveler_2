@@ -17,6 +17,7 @@ function SetDefaultSetupValues() {
     document.getElementById("InvertAxis").value = 1;
     document.getElementById("Accesspoint").checked = true;
     document.getElementById("SerialOutput").checked = false;
+    document.getElementById("Damping").checked = false;
     document.getElementById("VoltageThreshold").value = 0.00;
     document.getElementById("VoltagePin").value = 36;
     document.getElementById("Resistor1").value = 3600;
@@ -42,6 +43,8 @@ function SetSetup(submitData = true) {
         sURL += document.getElementById("ThresholdSlider").value;
         sURL += '&s=';
         sURL += document.getElementById("SerialOutput").checked ? '1' : '0';
+        sURL += '&dmp=';
+        sURL += document.getElementById("Damping").checked ? '1' : '0';
         sURL += '&v=';
         sURL += parseInt(document.getElementById("VoltageThreshold").value * 100);
         sURL += '&vp=';
@@ -80,6 +83,7 @@ function SetSetup(submitData = true) {
                 document.getElementById("SDAPin").value = arr[10] || 0;
                 document.getElementById("SCLPin").value = arr[11] || 0;
                 document.getElementById("I2CAdress").value = arr[12] || 0;
+                document.getElementById("Damping").checked = arr[13] == '1' ? true : false;
             } else {
                 // Set defaults for new fields if server doesn't support them yet
                 document.getElementById("VoltagePin").value = 0;

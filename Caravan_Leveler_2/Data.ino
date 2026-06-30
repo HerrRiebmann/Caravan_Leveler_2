@@ -9,6 +9,7 @@ void LoadData() {
   LoadAP();
   LoadWiFi();
   LoadSerial();
+  LoadDamping();
   LoadVoltageSettings();
   LoadI2CSetup();
 
@@ -54,6 +55,12 @@ void LoadSerial() {
   
   logPrint(String(F("Serial Output enabled: ")));
   logPrintLn(Serial_Enabled ? "True": "False");
+}
+void LoadDamping() {
+  dampingEnabled = settings.getBool("damping", dampingEnabled);
+
+  logPrint(String(F("Damping enabled: ")));
+  logPrintLn(dampingEnabled ? "True" : "False");
 }
 void LoadVoltageSettings() {
   voltThreshold = settings.getFloat("voltThreshold", voltThreshold);
@@ -116,6 +123,11 @@ void StoreWiFi(){
 void StoreSerial() {
   settings.begin("settings", false);
   settings.putBool("serialEnabled", Serial_Enabled);
+  settings.end();
+}
+void StoreDamping() {
+  settings.begin("settings", false);
+  settings.putBool("damping", dampingEnabled);
   settings.end();
 }
 void StoreVoltageSettings() {

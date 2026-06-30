@@ -168,6 +168,8 @@ void handle_setup() {
   txt.concat(String(MPU_SCL));
   txt.concat("|");
   txt.concat(String(MPU_Adress));
+  txt.concat("|");
+  txt.concat(String(dampingEnabled));
   webServer.send(200, "text/plain", txt);
 }
 void handle_calibrate() {  

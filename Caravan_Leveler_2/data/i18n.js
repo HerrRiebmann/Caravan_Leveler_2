@@ -33,6 +33,7 @@
             // Settings — field labels
             'set.range':   'Indicating Range',
             'set.serial':  'Serial Output',
+            'set.damping': 'Damping',
             'set.invert':  'Invert Axis',
             'set.tap':     'Tap to rotate',
             'set.vpin':    'Voltage Pin',
@@ -51,6 +52,7 @@
             'btn.refresh':   'Refresh',
             // Tooltips
             'tip.serial':   'Enables the Micro-USB Serial Output with debugging information',
+            'tip.damping':  'Smooths the level display to reduce jitter',
             'tip.vpin':     'Analog pin number for voltage measurement (0-36)',
             'tip.vthresh':  'Voltage threshold to correct measurement differences',
             'tip.r1':       'First resistor value in ohms for the voltage divider',
@@ -108,6 +110,7 @@
             // Settings — field labels
             'set.range':   'Anzeigebereich',
             'set.serial':  'Serielle Ausgabe',
+            'set.damping': 'Dämpfung',
             'set.invert':  'Achse invertieren',
             'set.tap':     'Tippen zum Drehen',
             'set.vpin':    'Spannungspin',
@@ -126,6 +129,7 @@
             'btn.refresh':   'Aktualisieren',
             // Tooltips
             'tip.serial':   'Aktiviert die serielle USB-Ausgabe mit Debug-Informationen',
+            'tip.damping':  'Glättet die Anzeige der Wasserwaage für ein ruhigeres Bild',
             'tip.vpin':     'Analoger Pin für die Spannungsmessung (0-36)',
             'tip.vthresh':  'Schwellenwert zur Korrektur von Messabweichungen',
             'tip.r1':       'Erster Widerstandswert in Ohm für den Spannungsteiler',

@@ -203,6 +203,10 @@ void ProcessSetupArguments() {
       Serial_Enabled = webServer.arg(i) == "1";
       StoreSerial();
     }
+    if (webServer.argName(i).compareTo(F("dmp")) == 0) {
+      dampingEnabled = webServer.arg(i) == "1";
+      StoreDamping();
+    }
     if (webServer.argName(i).compareTo(F("v")) == 0) {
       voltThreshold = webServer.arg(i).toInt() / 100.0;
       voltageChanged = true;

@@ -73,6 +73,7 @@ bool OTA_Enabled = true;
 uint8_t levelThreshold = 5;
 int invertAxis = 0;
 bool useAcessPointMode = false;
+bool dampingEnabled = false;
 float voltThreshold = 0.0;
 int resistor1 = 5100;
 int resistor2 = 1000;
