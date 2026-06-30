@@ -9,7 +9,8 @@ An ESP32 will create a hotspot with a captive portal.
 This captive portal will force the phone to open up a, usually for login intended, website (_which represents the water level_).
 
 [![Version](https://img.shields.io/badge/version-v2026.6.30-blue.svg)](https://github.com/HerrRiebmann/Caravan_Leveler_2/releases/tag/v2026.06.30)
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen.svg)](https://trib.free.nf/CaravanLevelerDemo/index.html?source=github)
+[![Web Installer](https://img.shields.io/badge/Web-Installer-008CBA.svg)](https://trib.free.nf/flash.html?source=github)
+[![Live Demo](https://img.shields.io/badge/live-demo-brightgreen.svg)](https://trib.free.nf/CaravanLevelerDemo/index.html?source=github)
 
 ## Contents
 * [Usage](#usage)
