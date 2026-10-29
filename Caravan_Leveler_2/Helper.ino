@@ -317,15 +317,15 @@ void logPrintLn(const String& msg) {
   logPrint(msg, true);
 }
 
-void logPrint(const String& msg, bool linebreak) {
-  if(!Serial_Enabled)
-    return;
+void logPrint(const String& msg, bool linebreak) {  
   logBuffer.concat(msg);
   if (linebreak) {
-    Serial.println(msg);
+    if(Serial_Enabled)
+      Serial.println(msg);
     logBuffer.concat("\n");
   } else {
-    Serial.print(msg);
+    if(Serial_Enabled)
+      Serial.print(msg);
   }
   if (logBuffer.length() > 10000) {
     logBuffer.remove(0, 1000);

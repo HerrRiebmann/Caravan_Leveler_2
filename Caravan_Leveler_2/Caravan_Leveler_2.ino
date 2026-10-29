@@ -68,7 +68,7 @@ bool UploadIsSPIFFS = false;
 
 //Settings
 Preferences settings;
-bool Serial_Enabled = true;
+bool Serial_Enabled = false;
 bool OTA_Enabled = true;
 uint8_t levelThreshold = 5;
 int invertAxis = 0;

@@ -1,3 +1,11 @@
+static float normalizeAngle(float angle) {
+  while (angle > 180.0f)
+    angle -= 360.0f;
+  while (angle < -180.0f)
+    angle += 360.0f;
+  return angle;
+}
+
 void getLevel() {
   if (!accelInitialized)
     return;
@@ -8,17 +16,18 @@ void getLevel() {
   //Calculate pitch and roll angles
   float rawPitch = atan2(a.acceleration.x, sqrt(a.acceleration.y * a.acceleration.y + a.acceleration.z * a.acceleration.z)) * 180 / PI;
   float rawRoll = atan2(-a.acceleration.y, a.acceleration.z) * 180 / PI;
-  rawPitch -= calibrationX;
-  rawRoll -= calibrationY;
+  rawPitch = normalizeAngle(rawPitch - calibrationX);
+  rawRoll = normalizeAngle(rawRoll - calibrationY);
 
   if (dampingEnabled) {
-    // Mittelwert aus aktuellem und letztem Wert
-    float smoothPitch = (pitch + rawPitch) / 2.0;
-    float smoothRoll = (roll + rawRoll) / 2.0;
+    float pitchDelta = normalizeAngle(rawPitch - pitch);
+    float rollDelta = normalizeAngle(rawRoll - roll);
+    float smoothPitch = normalizeAngle(pitch + pitchDelta / 2.0f);
+    float smoothRoll = normalizeAngle(roll + rollDelta / 2.0f);
     // Totzone: Nur aktualisieren wenn Änderung > 0.05°
-    if (abs(smoothPitch - pitch) > 0.05)
+    if (abs(pitchDelta / 2.0f) > 0.05f)
       pitch = smoothPitch;
-    if (abs(smoothRoll - roll) > 0.05)
+    if (abs(rollDelta / 2.0f) > 0.05f)
       roll = smoothRoll;
   } else {
     pitch = rawPitch;

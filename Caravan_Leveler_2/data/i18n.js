@@ -51,7 +51,7 @@
             'btn.restart':   'Restart',
             'btn.refresh':   'Refresh',
             // Tooltips
-            'tip.serial':   'Enables the Micro-USB Serial Output with debugging information',
+            'tip.serial':   'Enables the Micro-USB Serial Output with debugging information. Attention!!! This can break the setup via the web interface.',
             'tip.damping':  'Smooths the level display to reduce jitter',
             'tip.vpin':     'Analog pin number for voltage measurement (0-36)',
             'tip.vthresh':  'Voltage threshold to correct measurement differences',
@@ -128,7 +128,7 @@
             'btn.restart':   'Neustart',
             'btn.refresh':   'Aktualisieren',
             // Tooltips
-            'tip.serial':   'Aktiviert die serielle USB-Ausgabe mit Debug-Informationen',
+            'tip.serial':   'Aktiviert die serielle USB-Ausgabe mit Debug-Informationen. Achtung!!! Dies kann die Einrichtung über die Weboberfläche beeinträchtigen.',
             'tip.damping':  'Glättet die Anzeige der Wasserwaage für ein ruhigeres Bild',
             'tip.vpin':     'Analoger Pin für die Spannungsmessung (0-36)',
             'tip.vthresh':  'Schwellenwert zur Korrektur von Messabweichungen',
